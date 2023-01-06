@@ -88,11 +88,24 @@ public class GridController : MonoBehaviourSingleton<GridController>
         }
     }
 
-    public void HiglightCellRowColumn(int number, int cellIdx, Vector2Int position)
+    public void HiglightCellRowColumnNumber(int number, int cellIdx, Vector2Int position)
     {
+        DownlightAllCells();
+
         foreach (Cell cell in cells)
         {
-            cell.HighlightCellRowColumn(number, cellIdx, position);
+            cell.HighlightCellRowColumn(cellIdx, position);
+            cell.HighlightNumberInCell(number);
+        }
+    }
+
+    public void HiglightCellRowColumn(int cellIdx, Vector2Int position)
+    {
+        DownlightAllCells();
+
+        foreach (Cell cell in cells)
+        {
+            cell.HighlightCellRowColumn(cellIdx, position);
         }
     }
 

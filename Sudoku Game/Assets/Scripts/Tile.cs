@@ -61,8 +61,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             GridController.Instance.DownlightAllCells();
 
             // Highlight same number in other cells
-            //GridController.Instance.HiglightNumberInCells(solutionNumber);
-            GridController.Instance.HiglightCellRowColumn(solutionNumber, cellParent.CellIdx, position);
+            GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
         }
         else
         {
@@ -71,17 +70,24 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                 currentNumber = InputController.Instance.SelectedNumber;
                 numberTMP.text = currentNumber.ToString();
                 isSolved = true;
+
+                GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
             }
             else if(InputController.Instance.SelectedNumber == -1)
             {
                 GridController.Instance.DownlightAllCells();
+                GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
             }
             else
             {
                 Debug.Log($"The current number {InputController.Instance.SelectedNumber} it is not the same as {solutionNumber}");
+                return;
             }
-            
+
+            HighlightSelectedTile();
+
         }
+
         
     }
 
@@ -139,6 +145,20 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         isHighlight = true;
 
         tileImage.color = SkinController.Instance.CurrentTileSkin.TileHoverColor;
+    }
+
+    public void HighlightSameNumberTile()
+    {
+        isHighlight = true;
+
+        tileImage.color = SkinController.Instance.CurrentTileSkin.TileSameNumberColor;
+    }
+
+    public void HighlightSelectedTile()
+    {
+        isHighlight = true;
+
+        tileImage.color = SkinController.Instance.CurrentTileSkin.TileSelectedColor;
     }
 
     public void DownlightTile()

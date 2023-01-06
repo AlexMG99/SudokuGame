@@ -15,6 +15,14 @@ public class TileSkinSO : ScriptableObject
     public Color TileHoverColor => tileHoverColor;
 
     [SerializeField]
+    private Color tileSelectedColor;
+    public Color TileSelectedColor => tileSelectedColor;
+
+    [SerializeField]
+    private Color tileSameNumberColor;
+    public Color TileSameNumberColor => tileSameNumberColor;
+
+    [SerializeField]
     private Color tileBorderColor;
     public Color TileBorderColor => tileBorderColor;
 

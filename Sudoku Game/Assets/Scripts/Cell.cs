@@ -84,7 +84,7 @@ public class Cell : MonoBehaviour
         return false;
     }
 
-    private void HighlightNumberByRowOrColumn(int number, Vector2Int position)
+    private void HighlightNumberByRowOrColumn(Vector2Int position)
     {
         foreach (Tile tile in tiles)
         {
@@ -130,10 +130,10 @@ public class Cell : MonoBehaviour
     {
         Tile highlightTile = GetTileByNumber(number);
         if (highlightTile)
-            highlightTile.HighlightTile();
+            highlightTile.HighlightSameNumberTile();
     }
 
-    public void HighlightCellRowColumn(int number, int _cellIdx, Vector2Int position)
+    public void HighlightCellRowColumn(int _cellIdx, Vector2Int position)
     {
         // Check if is containing cell
         if (cellIdx == _cellIdx)
@@ -142,11 +142,8 @@ public class Cell : MonoBehaviour
         }
         else if (CellIsInRow(position.x) || CellIsInColumn(position.y)) // Check if has row or column
         {
-            HighlightNumberByRowOrColumn(number, position);
+            HighlightNumberByRowOrColumn(position);
         }
-
-        // Highlight number in other cells
-        HighlightNumberInCell(number);
     }
 
     public void DownlightCell()
