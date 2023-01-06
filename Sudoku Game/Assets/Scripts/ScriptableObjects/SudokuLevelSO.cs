@@ -40,5 +40,30 @@ public class SudokuLevelSO : ScriptableObject
                 break;
         }
     }
+
+    public bool CheckIfLevelValid()
+    {
+        // Check Solution number
+        for (int i = 0; i < numberSolution.Length; i++)
+        {
+            if (numberSolution[i].Length != 9)
+            {
+                Debug.LogError($"Level no valid! Row {i} has {numberSolution[i].Length} size!");
+                return false;
+            }
+        }
+
+        // Check Hide numbers
+        for (int i = 0; i < numberHide.Length; i++)
+        {
+            if (numberHide[i].Length != 9)
+            {
+                Debug.LogError($"Level no valid! Row {i} has {numberHide[i].Length} size!");
+                return false;
+            }
+        }
+
+        return true;
+    }
     #endregion
 }

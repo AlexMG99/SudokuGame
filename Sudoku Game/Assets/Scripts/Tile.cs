@@ -56,7 +56,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private void Init()
     {
         notes.AddRange(transform.GetComponentsInChildren<TextMeshProUGUI>());
-        SetSkin();
     }
 
     private void OnClicked()
@@ -76,6 +75,14 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private void ChangeColorImage(Color newColor)
     {
         tileImage.color = newColor;
+    }
+
+    private void SetNumberToText()
+    {
+        if (isSolved)
+            numberTMP.text = solutionNumber.ToString();
+        else
+            numberTMP.text = (currentNumber == -1) ? " " : currentNumber.ToString();
     }
 
 
@@ -100,15 +107,16 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         if (lockedNum == '-')
         {
-            solutionNumber = -1;
+            currentNumber = -1;
             isSolved = false;
         }
         else
         {
-            solutionNumber = (int)char.GetNumericValue(lockedNum);
+            currentNumber = (int)char.GetNumericValue(lockedNum);
             isSolved = true;
         }
 
+        SetNumberToText();
     }
 
     public void HighlightTile()
@@ -130,9 +138,19 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return isHighlight;
     }
 
+    public bool IsSolved()
+    {
+        return isSolved;
+    }
+
     public bool CheckSolvedNumber(int number)
     {
         return isSolved && number == solutionNumber;
+    }
+
+    public bool CheckNumber(int number)
+    {
+        return number == solutionNumber;
     }
 
     #endregion

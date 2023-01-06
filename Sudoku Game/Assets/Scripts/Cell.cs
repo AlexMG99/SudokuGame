@@ -36,7 +36,6 @@ public class Cell : MonoBehaviour
     private void Init()
     {
         tiles.AddRange(tileContainer.GetComponentsInChildren<Tile>());
-        SetSkin();
     }
 
     private void SetSkin()
@@ -46,14 +45,23 @@ public class Cell : MonoBehaviour
 
     private Tile GetTileByNumber(int number)
     {
+        Tile numberTile = null;
+
         foreach (Tile tile in tiles)
         {
-            if (tile.CheckSolvedNumber(number))
-                return tile;
+            if (tile.CheckNumber(number))
+            {
+                numberTile = tile;
+                break;
+            }
         }
 
-        Debug.LogError($"There is no tile with number {number}!");
-        return null;
+        if (!numberTile)
+            Debug.LogError($"There is no tile with number {number}!");
+        else if (!numberTile.IsSolved())
+            return null;
+
+        return numberTile;
     }
     #endregion
 

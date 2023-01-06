@@ -24,7 +24,7 @@ public class SkinController : MonoBehaviourSingleton<SkinController>
     {
         base.Awake();
         currentSkinIdx = PlayerPrefs.GetInt("SkinIndex", 0);
-        ChangeSkin(currentSkinIdx);
+        ChangeSkin();
     }
 
     public void ChangeSkin(int newSkinIdx)
@@ -37,5 +37,11 @@ public class SkinController : MonoBehaviourSingleton<SkinController>
         PlayerPrefs.SetInt("SkinIndex", currentSkinIdx);
 
         changeSkinEvent.Raise();
+    }
+
+    public void ChangeSkin()
+    {
+        currentTileSkin = tileSkins[currentSkinIdx];
+        currentGridSkin = gridSkins[currentSkinIdx];
     }
 }

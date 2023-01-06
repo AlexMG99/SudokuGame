@@ -20,6 +20,13 @@ public class GridController : MonoBehaviourSingleton<GridController>
         Init();
     }
 
+    private void Start()
+    {
+        // Create Level
+        SetGridLevel();
+        UpdateSkins();
+    }
+
     #endregion
 
     #region PrivateFunctions
@@ -30,11 +37,6 @@ public class GridController : MonoBehaviourSingleton<GridController>
         // Level Generation
         levelController = GetComponent<LevelController>();
         levelController.LoadLevel();
-
-        GenerateLevel();
-
-        // Skin
-        SetSkin();
     }
 
     private void SetSkin()
@@ -43,7 +45,7 @@ public class GridController : MonoBehaviourSingleton<GridController>
         // UI Text
     }
 
-    private void GenerateLevel()
+    private void SetGridLevel()
     {
         for (int i = 0; i < cells.Count; i++)
         {
@@ -56,17 +58,50 @@ public class GridController : MonoBehaviourSingleton<GridController>
     private string GetCellNumber(int cellIdx, string[] numberArray)
     {
         string cellNumbers = "";
+        int rowCellIdx = Mathf.FloorToInt(cellIdx / 3);
 
-        if(cellIdx < 3)
+        /*if (cellIdx < 3)
         {
             for (int stringIdx = 0; stringIdx < 3; stringIdx++)
             {
-                for (int idxChar = 0; idxChar < 3; idxChar++)
+                for (int chardIdx = 0; chardIdx < 3; chardIdx++)
                 {
-                    cellNumbers += numberArray[stringIdx][idxChar * cellIdx];
+                    cellNumbers += numberArray[stringIdx][chardIdx + (cellIdx) * 3];
+                    //Debug.Log($"Cell : {cellIdx}, Index: {cellNumbers.Length - 1}, Real Index: {stringIdx}, {chardIdx * (cellIdx + 1)}, Number: {cellNumbers[cellNumbers.Length - 1]}");
                 }
                 
             }
+        }
+        else if (cellIdx >= 3 && cellIdx < 6)
+        {
+            for (int stringIdx = 3; stringIdx < 6; stringIdx++)
+            {
+                for (int chardIdx = 0; chardIdx < 3; chardIdx++)
+                {
+                    cellNumbers += numberArray[stringIdx][chardIdx + (cellIdx - 3) * 3];
+                }
+
+            }
+        }
+        else if (cellIdx >= 6 && cellIdx < 9)
+        {
+            for (int stringIdx = 6; stringIdx < 9; stringIdx++)
+            {
+                for (int chardIdx = 0; chardIdx < 3; chardIdx++)
+                {
+                    cellNumbers += numberArray[stringIdx][chardIdx + (cellIdx - 6) * 3];
+                }
+
+            }
+        }*/
+
+        for (int stringIdx = rowCellIdx * 3; stringIdx < (rowCellIdx + 1) * 3 && stringIdx >= rowCellIdx * 3; stringIdx++)
+        {
+            for (int chardIdx = 0; chardIdx < 3; chardIdx++)
+            {
+                cellNumbers += numberArray[stringIdx][chardIdx + (cellIdx - (rowCellIdx) * 3) * 3];
+            }
+
         }
 
         return cellNumbers;

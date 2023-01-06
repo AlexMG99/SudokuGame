@@ -32,13 +32,16 @@ public class LevelController : MonoBehaviour
     #region PublicFunctions
     public void LoadLevel()
     {
-        if (testLevel || levels.Count == 0)
+        if (isTestLevel || levels.Count == 0)
             currentLevel = testLevel;
         else
         {
             currentLevelIdx = PlayerPrefs.GetInt("LevelIndex", 0);
             currentLevel = levels[currentLevelIdx];
         }
+
+        if (!currentLevel.CheckIfLevelValid())
+            Debug.LogError("Level No Valid!");
     }
     #endregion
 }
