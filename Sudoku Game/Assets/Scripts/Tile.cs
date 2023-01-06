@@ -16,9 +16,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Transform noteContainer;
     private List<TextMeshProUGUI> notes = new List<TextMeshProUGUI>();
 
+    private Vector2Int position;
+
     private int solutionNumber;
     private int currentNumber;
 
+    private bool isLocked = false;
     private bool isSolved = false;
     private bool isHighlight = false;
 
@@ -60,7 +63,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     private void OnClicked()
     {
-        if (isSolved)
+        if (isLocked || isSolved)
         {
             // Deselect all other numbers
             GridController.Instance.DownlightAllCells();
@@ -68,18 +71,34 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             // Highlight same number in other cells
             GridController.Instance.HiglightNumberInCells(solutionNumber);
         }
+        else
+        {
+            if (InputController.Instance.SelectedNumber == solutionNumber)
+            {
+                currentNumber = InputController.Instance.SelectedNumber;
+                numberTMP.text = currentNumber.ToString();
+                isSolved = true;
+            }
+            else if(InputController.Instance.SelectedNumber == -1)
+            {
+                GridController.Instance.DownlightAllCells();
+            }
+            else
+            {
+                Debug.Log($"The current number {InputController.Instance.SelectedNumber} it is not the same as {solutionNumber}");
+            }
+            
+        }
 
-        // Highlight rows and columns
-    }
+        // Highlight rows and columns and Cell
 
-    private void ChangeColorImage(Color newColor)
-    {
-        tileImage.color = newColor;
+        // Check if number is correct
+        
     }
 
     private void SetNumberToText()
     {
-        if (isSolved)
+        if (isLocked)
             numberTMP.text = solutionNumber.ToString();
         else
             numberTMP.text = (currentNumber == -1) ? " " : currentNumber.ToString();
@@ -95,7 +114,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         tileImage.color = SkinController.Instance.CurrentTileSkin.TileIdleColor;
         borderImage.color = SkinController.Instance.CurrentTileSkin.TileBorderColor;
-        if(isSolved)
+        if(isLocked)
             numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberLockColor;
         else
             numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
@@ -108,12 +127,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (lockedNum == '-')
         {
             currentNumber = -1;
-            isSolved = false;
+            isLocked = false;
         }
         else
         {
             currentNumber = (int)char.GetNumericValue(lockedNum);
-            isSolved = true;
+            isLocked = true;
         }
 
         SetNumberToText();
@@ -140,12 +159,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public bool IsSolved()
     {
-        return isSolved;
+        return isLocked || isSolved;
     }
 
     public bool CheckSolvedNumber(int number)
     {
-        return isSolved && number == solutionNumber;
+        return isLocked && number == solutionNumber;
     }
 
     public bool CheckNumber(int number)
