@@ -61,6 +61,22 @@ public class Cell : MonoBehaviour
         return numberTile;
     }
 
+    private Tile GetTileByCurrentNumber(int number)
+    {
+        Tile numberTile = null;
+
+        foreach (Tile tile in tiles)
+        {
+            if (tile.CheckCurrentNumber(number))
+            {
+                numberTile = tile;
+                break;
+            }
+        }
+
+        return numberTile;
+    }
+
     private bool CellIsInRow(int row)
     {
         if (row < 3)
@@ -82,6 +98,18 @@ public class Cell : MonoBehaviour
         else if (column >= 6 && column < 9)
             return (cellIdx == 2 || cellIdx == 5 || cellIdx == 8);
         return false;
+    }
+
+    private void HighlightWrongNumberByRowOrColumn(int number, Vector2Int position)
+    {
+        foreach (Tile tile in tiles)
+        {
+            if (tile.Position.x == position.x || tile.Position.y == position.y)
+            {
+                if(tile.CheckCurrentNumber(number))
+                    tile.HighlightWrongTile();
+            }
+        }
     }
 
     private void HighlightNumberByRowOrColumn(Vector2Int position)
@@ -133,6 +161,13 @@ public class Cell : MonoBehaviour
             highlightTile.HighlightSameNumberTile();
     }
 
+    public void HighlightWrongNumberInCell(int number)
+    {
+        Tile highlightTile = GetTileByCurrentNumber(number);
+        if (highlightTile)
+            highlightTile.HighlightWrongTile();
+    }
+
     public void HighlightCellRowColumn(int _cellIdx, Vector2Int position)
     {
         // Check if is containing cell
@@ -143,6 +178,15 @@ public class Cell : MonoBehaviour
         else if (CellIsInRow(position.x) || CellIsInColumn(position.y)) // Check if has row or column
         {
             HighlightNumberByRowOrColumn(position);
+        }
+    }
+
+    public void HighlightWrongNumberRowColumn(int number, Vector2Int position)
+    {
+        // Check if is containing cell
+        if (CellIsInRow(position.x) || CellIsInColumn(position.y)) // Check if has row or column
+        {
+            HighlightWrongNumberByRowOrColumn(number, position);
         }
     }
 

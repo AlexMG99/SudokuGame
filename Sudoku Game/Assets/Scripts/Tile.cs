@@ -28,6 +28,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private bool isLocked = false;
     private bool isSolved = false;
     private bool isHighlight = false;
+    private bool isWrong = false;
 
     #region MonoBehaviourFunctions
     private void Awake()
@@ -57,9 +58,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         if (isLocked || isSolved)
         {
-            // Deselect all other numbers
-            GridController.Instance.DownlightAllCells();
-
             // Highlight same number in other cells
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
         }
@@ -67,19 +65,23 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         {
             if (InputController.Instance.SelectedNumber == solutionNumber)
             {
-                currentNumber = InputController.Instance.SelectedNumber;
-                numberTMP.text = currentNumber.ToString();
+                UpdateNumberText(InputController.Instance.SelectedNumber);
                 isSolved = true;
 
                 GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
             }
             else if(InputController.Instance.SelectedNumber == -1)
             {
-                GridController.Instance.DownlightAllCells();
                 GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
             }
             else
             {
+                UpdateNumberText(InputController.Instance.SelectedNumber);
+                isWrong = true;
+
+                GridController.Instance.HiglightWrongNumberRowColumn(currentNumber, cellParent.CellIdx, position);
+                HighlightWrongTile();
+
                 Debug.Log($"The current number {InputController.Instance.SelectedNumber} it is not the same as {solutionNumber}");
                 return;
             }
@@ -89,6 +91,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         }
 
         
+    }
+
+    private void UpdateNumberText(int number)
+    {
+        currentNumber = number;
+        numberTMP.text = currentNumber.ToString();
     }
 
     private void SetNumberToText()
@@ -161,6 +169,16 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         tileImage.color = SkinController.Instance.CurrentTileSkin.TileSelectedColor;
     }
 
+    public void HighlightWrongTile()
+    {
+        isHighlight = true;
+
+        tileImage.color = SkinController.Instance.CurrentTileSkin.TileWrongColor;
+        
+        if(isWrong)
+            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberWrongColor;
+    }
+
     public void DownlightTile()
     {
         isHighlight = false;
@@ -178,9 +196,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return isLocked || isSolved;
     }
 
-    public bool CheckSolvedNumber(int number)
+    public bool CheckCurrentNumber(int number)
     {
-        return isLocked && number == solutionNumber;
+        return number == currentNumber;
     }
 
     public bool CheckNumber(int number)

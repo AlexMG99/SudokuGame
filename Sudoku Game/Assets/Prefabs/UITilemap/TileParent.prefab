@@ -1484,6 +1484,7 @@ MonoBehaviour:
   borderImage: {fileID: 648528775214690872}
   numberTMP: {fileID: 6571778722441471986}
   noteContainer: {fileID: 7145602049463106428}
+  position: {x: 0, y: 0}
 --- !u!1 &5088986176279784995
 GameObject:
   m_ObjectHideFlags: 0
@@ -2182,7 +2183,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1.35
+  m_PixelsPerUnitMultiplier: 2.5
 --- !u!1 &9169643469557541151
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,6 +23,10 @@ public class TileSkinSO : ScriptableObject
     public Color TileSameNumberColor => tileSameNumberColor;
 
     [SerializeField]
+    private Color tileWrongColor;
+    public Color TileWrongColor => tileWrongColor;
+
+    [SerializeField]
     private Color tileBorderColor;
     public Color TileBorderColor => tileBorderColor;
 
@@ -33,6 +37,10 @@ public class TileSkinSO : ScriptableObject
     [SerializeField]
     private Color numberSolutionColor;
     public Color NumberSolutionColor => numberSolutionColor;
+
+    [SerializeField]
+    private Color numberWrongColor;
+    public Color NumberWrongColor => numberWrongColor;
 
     [SerializeField]
     private Color notesColor;
