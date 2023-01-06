@@ -12,6 +12,7 @@ public class Cell : MonoBehaviour
     private Transform tileContainer;
 
     private List<Tile> tiles = new List<Tile>();
+    private int cellIdx = -1;
 
     #region MonoBehaviourFunctions
     private void Awake()
@@ -76,11 +77,14 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void SetTilesNumbers(string solutionNumbers, string lockedNumbers)
+    public void SetTilesNumbers(string solutionNumbers, string lockedNumbers, int _cellIdx)
     {
+        cellIdx = _cellIdx;
         for (int i = 0; i < tiles.Count; i++)
         {
-            tiles[i].SetNumber(solutionNumbers[i], lockedNumbers[i]);
+            Vector2Int tilePosition = new Vector2Int(Mathf.FloorToInt(i/3) + Mathf.FloorToInt(cellIdx/3) * 3
+                ,i + 3 * (cellIdx - Mathf.FloorToInt(i / 3) - Mathf.FloorToInt(cellIdx / 3) * 3));
+            tiles[i].SetNumber(solutionNumbers[i], lockedNumbers[i], tilePosition);
         }
     }
 

@@ -57,7 +57,7 @@ public class GridController : MonoBehaviourSingleton<GridController>
         {
             string cellLockedNumbers = GetCellNumber(i, levelController.CurrentLevel.NumberSolution);
             string cellHideNumbers = GetCellNumber(i, levelController.CurrentLevel.NumberHide);
-            cells[i].SetTilesNumbers(cellLockedNumbers, cellHideNumbers);
+            cells[i].SetTilesNumbers(cellLockedNumbers, cellHideNumbers, i);
         }
     }
 

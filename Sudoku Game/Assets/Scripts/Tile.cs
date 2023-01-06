@@ -16,6 +16,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Transform noteContainer;
     private List<TextMeshProUGUI> notes = new List<TextMeshProUGUI>();
 
+    [SerializeField]
     private Vector2Int position;
 
     private int solutionNumber;
@@ -120,8 +121,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
     }
 
-    public void SetNumber(char solvedNum, char lockedNum)
+    public void SetNumber(char solvedNum, char lockedNum, Vector2Int pos)
     {
+        position = pos;
+
         solutionNumber = (int)char.GetNumericValue(solvedNum);
 
         if (lockedNum == '-')
