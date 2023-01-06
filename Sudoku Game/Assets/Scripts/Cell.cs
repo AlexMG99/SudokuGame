@@ -68,6 +68,14 @@ public class Cell : MonoBehaviour
         }
     }
 
+    public void SetTilesNumbers(string solutionNumbers, string lockedNumbers)
+    {
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            tiles[i].SetNumber(solutionNumbers[i], lockedNumbers[i]);
+        }
+    }
+
     public void HighlightNumberInCell(int number)
     {
         Tile highlightTile = GetTileByNumber(number);

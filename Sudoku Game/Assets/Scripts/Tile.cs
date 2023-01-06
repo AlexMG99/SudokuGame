@@ -94,6 +94,23 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
     }
 
+    public void SetNumber(char solvedNum, char lockedNum)
+    {
+        solutionNumber = (int)char.GetNumericValue(solvedNum);
+
+        if (lockedNum == '-')
+        {
+            solutionNumber = -1;
+            isSolved = false;
+        }
+        else
+        {
+            solutionNumber = (int)char.GetNumericValue(lockedNum);
+            isSolved = true;
+        }
+
+    }
+
     public void HighlightTile()
     {
         isHighlight = true;

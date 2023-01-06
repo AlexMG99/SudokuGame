@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(LevelController))]
 public class GridController : MonoBehaviourSingleton<GridController>
 {
     [Header("Grid Skin Elements")]
     [SerializeField] private Image backgroundImage;
 
     private List<Cell> cells = new List<Cell>();
+
+    private LevelController levelController;
 
     #region MonoBehaviourFunctions
     public override void Awake()
@@ -24,6 +27,13 @@ public class GridController : MonoBehaviourSingleton<GridController>
     {
         cells.AddRange(transform.GetComponentsInChildren<Cell>());
 
+        // Level Generation
+        levelController = GetComponent<LevelController>();
+        levelController.LoadLevel();
+
+        GenerateLevel();
+
+        // Skin
         SetSkin();
     }
 
@@ -31,6 +41,35 @@ public class GridController : MonoBehaviourSingleton<GridController>
     {
         backgroundImage.color = SkinController.Instance.CurrentGridSkin.BackgroundColor;
         // UI Text
+    }
+
+    private void GenerateLevel()
+    {
+        for (int i = 0; i < cells.Count; i++)
+        {
+            string cellLockedNumbers = GetCellNumber(i, levelController.CurrentLevel.NumberSolution);
+            string cellHideNumbers = GetCellNumber(i, levelController.CurrentLevel.NumberHide);
+            cells[i].SetTilesNumbers(cellLockedNumbers, cellHideNumbers);
+        }
+    }
+
+    private string GetCellNumber(int cellIdx, string[] numberArray)
+    {
+        string cellNumbers = "";
+
+        if(cellIdx < 3)
+        {
+            for (int stringIdx = 0; stringIdx < 3; stringIdx++)
+            {
+                for (int idxChar = 0; idxChar < 3; idxChar++)
+                {
+                    cellNumbers += numberArray[stringIdx][idxChar * cellIdx];
+                }
+                
+            }
+        }
+
+        return cellNumbers;
     }
     #endregion
 
