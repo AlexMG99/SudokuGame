@@ -88,11 +88,11 @@ public class GridController : MonoBehaviourSingleton<GridController>
         }
     }
 
-    public void DownlightNumberInCells(int number)
+    public void HiglightCellRowColumn(int number, int cellIdx, Vector2Int position)
     {
         foreach (Cell cell in cells)
         {
-            cell.DownlightNumberInCell(number);
+            cell.HighlightCellRowColumn(number, cellIdx, position);
         }
     }
 

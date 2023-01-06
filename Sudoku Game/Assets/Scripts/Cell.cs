@@ -12,6 +12,8 @@ public class Cell : MonoBehaviour
     private Transform tileContainer;
 
     private List<Tile> tiles = new List<Tile>();
+
+    public int CellIdx => cellIdx;
     private int cellIdx = -1;
 
     #region MonoBehaviourFunctions
@@ -20,23 +22,17 @@ public class Cell : MonoBehaviour
         Init();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     #endregion
 
     #region PrivateFunctions
     private void Init()
     {
         tiles.AddRange(tileContainer.GetComponentsInChildren<Tile>());
+
+        foreach (Tile tile in tiles)
+        {
+            tile.SetCell(this);
+        }
     }
 
     private void SetSkin()
@@ -63,6 +59,48 @@ public class Cell : MonoBehaviour
             return null;
 
         return numberTile;
+    }
+
+    private bool CellIsInRow(int row)
+    {
+        if (row < 3)
+            return cellIdx < 3;
+        else if (row >= 3 && row < 6)
+            return (cellIdx >= 3 && cellIdx <= 6);
+        else if (row >= 6 && row < 9)
+            return (cellIdx >= 6 && cellIdx <= 9);
+
+        return false;
+    }
+
+    private bool CellIsInColumn(int column)
+    {
+        if (column < 3)
+            return (cellIdx % 3 == 0);
+        else if (column >= 3 && column < 6)
+            return (cellIdx == 1 || cellIdx == 4 || cellIdx == 7);
+        else if (column >= 6 && column < 9)
+            return (cellIdx == 2 || cellIdx == 5 || cellIdx == 8);
+        return false;
+    }
+
+    private void HighlightNumberByRowOrColumn(int number, Vector2Int position)
+    {
+        foreach (Tile tile in tiles)
+        {
+            if (tile.Position.x == position.x || tile.Position.y == position.y)
+            {
+                tile.HighlightTile();
+            }
+        }
+    }
+
+    private void HighlightCell()
+    {
+        foreach (Tile tile in tiles)
+        {
+            tile.HighlightTile();
+        }
     }
     #endregion
 
@@ -95,11 +133,20 @@ public class Cell : MonoBehaviour
             highlightTile.HighlightTile();
     }
 
-    public void DownlightNumberInCell(int number)
+    public void HighlightCellRowColumn(int number, int _cellIdx, Vector2Int position)
     {
-        Tile highlightTile = GetTileByNumber(number);
-        if (highlightTile)
-            highlightTile.DownlightTile();
+        // Check if is containing cell
+        if (cellIdx == _cellIdx)
+        {
+            HighlightCell();
+        }
+        else if (CellIsInRow(position.x) || CellIsInColumn(position.y)) // Check if has row or column
+        {
+            HighlightNumberByRowOrColumn(number, position);
+        }
+
+        // Highlight number in other cells
+        HighlightNumberInCell(number);
     }
 
     public void DownlightCell()

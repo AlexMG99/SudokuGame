@@ -16,11 +16,14 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Transform noteContainer;
     private List<TextMeshProUGUI> notes = new List<TextMeshProUGUI>();
 
+    public Vector2Int Position => position;
     [SerializeField]
     private Vector2Int position;
 
     private int solutionNumber;
     private int currentNumber;
+
+    private Cell cellParent;
 
     private bool isLocked = false;
     private bool isSolved = false;
@@ -30,18 +33,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         Init();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
     #endregion
 
@@ -70,7 +61,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             GridController.Instance.DownlightAllCells();
 
             // Highlight same number in other cells
-            GridController.Instance.HiglightNumberInCells(solutionNumber);
+            //GridController.Instance.HiglightNumberInCells(solutionNumber);
+            GridController.Instance.HiglightCellRowColumn(solutionNumber, cellParent.CellIdx, position);
         }
         else
         {
@@ -90,10 +82,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             }
             
         }
-
-        // Highlight rows and columns and Cell
-
-        // Check if number is correct
         
     }
 
@@ -139,6 +127,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         }
 
         SetNumberToText();
+    }
+
+    public void SetCell(Cell cell)
+    {
+        cellParent = cell;
     }
 
     public void HighlightTile()
