@@ -1,3 +1,4 @@
+using Helper.Actions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -113,7 +114,7 @@ public class GridController : MonoBehaviourSingleton<GridController>
         return null;
     }
 
-    public bool UseHintOnCell()
+    public Action<int> UseHintOnCell()
     {
         int tryFindRandomCell = 0;
 
@@ -123,8 +124,7 @@ public class GridController : MonoBehaviourSingleton<GridController>
 
             if (!cells[randomRange].IsCellSolved())
             {
-                cells[randomRange].UseHintOnTile();
-                return true;
+                return cells[randomRange].UseHintOnTile();
             }
 
             tryFindRandomCell++;
@@ -134,12 +134,11 @@ public class GridController : MonoBehaviourSingleton<GridController>
         {
             if (!cell.IsCellSolved())
             {
-                cell.UseHintOnTile();
-                return true;
+                return cell.UseHintOnTile();
             }
         }
 
-        return false;
+        return new Action<int>(ActionType.None, -1, Vector2Int.zero);
     }
 
     public void HiglightCellRowColumnNumber(int number, int cellIdx, Vector2Int position)

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
+using Helper.Actions;
 
 public class Tile : MonoBehaviour, IPointerClickHandler 
 {
@@ -147,7 +148,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         cellParent = cell;
     }
 
-    public void SolveNumber()
+    public Action<int> SolveNumber()
     {
         UpdateNumberText(solutionNumber);
         isSolved = true;
@@ -162,6 +163,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         HighlightSelectedTile();
 
         cellParent.CheckCellSolved();
+
+        return new Action<int>(ActionType.AddValue, solutionNumber, position);
     }
 
     public bool CheckNumber()

@@ -17,6 +17,8 @@ public class LevelController : MonoBehaviour
     private SudokuLevelSO currentLevel;
     private int currentLevelIdx = 0;
 
+    //private int gameplayTime = 0f;
+
     #region MonoBehaviourFunctions
     void Awake()
     {

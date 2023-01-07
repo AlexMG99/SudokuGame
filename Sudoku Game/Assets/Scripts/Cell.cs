@@ -1,3 +1,4 @@
+using Helper.Actions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -189,7 +190,7 @@ public class Cell : MonoBehaviour
         return isCellSolved;
     }
 
-    public bool UseHintOnTile()
+    public Action<int> UseHintOnTile()
     {
         int tryFindRandomCell = 0;
 
@@ -199,8 +200,7 @@ public class Cell : MonoBehaviour
 
             if (!tiles[randomRange].IsSolved())
             {
-                tiles[randomRange].SolveNumber();
-                return true;
+                return tiles[randomRange].SolveNumber();
             }
 
             tryFindRandomCell++;
@@ -210,12 +210,11 @@ public class Cell : MonoBehaviour
         {
             if (!tile.IsSolved())
             {
-                tile.SolveNumber();
-                return true;
+                return tile.SolveNumber();
             }
         }
 
-        return false;
+        return new Action<int>(ActionType.None, -1, Vector2Int.zero);
     }
 
     public void HighlightNumberInCell(int number)

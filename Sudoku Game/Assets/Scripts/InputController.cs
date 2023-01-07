@@ -95,8 +95,12 @@ public class InputController : MonoBehaviourSingleton<InputController>
         if (hintCount <= 0)
             return;
 
-        if(GridController.Instance.UseHintOnCell())
+        Action<int> hintAction = GridController.Instance.UseHintOnCell();
+        if (hintAction.actionType != ActionType.None)
+        {
             hintCount--;
+            actionQueue.Add(hintAction);
+        }
     }
 
     public void RemoveNumberOnTile()
