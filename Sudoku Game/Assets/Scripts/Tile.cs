@@ -63,34 +63,18 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            if (InputController.Instance.SelectedNumber == solutionNumber)
-            {
-                UpdateNumberText(InputController.Instance.SelectedNumber);
-                isSolved = true;
+            // Set Selected Tile
+            InputController.Instance.SetSelectedTile(this);
 
+            // Highlight cells
+            if (IsSolved())
                 GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
-            }
-            else if(InputController.Instance.SelectedNumber == -1)
-            {
-                GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
-            }
             else
-            {
-                UpdateNumberText(InputController.Instance.SelectedNumber);
-                isWrong = true;
-
-                GridController.Instance.HiglightWrongNumberRowColumn(currentNumber, cellParent.CellIdx, position);
-                HighlightWrongTile();
-
-                Debug.Log($"The current number {InputController.Instance.SelectedNumber} it is not the same as {solutionNumber}");
-                return;
-            }
+                GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
 
             HighlightSelectedTile();
 
         }
-
-        
     }
 
     private void UpdateNumberText(int number)
@@ -106,8 +90,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         else
             numberTMP.text = (currentNumber == -1) ? " " : currentNumber.ToString();
     }
-
-
 
     #endregion
 
@@ -146,6 +128,35 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public void SetCell(Cell cell)
     {
         cellParent = cell;
+    }
+
+    public void CheckNumber()
+    {
+        if (InputController.Instance.SelectedNumber == solutionNumber)
+        {
+            UpdateNumberText(InputController.Instance.SelectedNumber);
+            isSolved = true;
+            
+            if(isWrong)
+            {
+                isWrong = false;
+                numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
+            }
+
+            GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
+            HighlightSelectedTile();
+        }
+        else
+        {
+            UpdateNumberText(InputController.Instance.SelectedNumber);
+            isWrong = true;
+
+            GridController.Instance.HiglightWrongNumberRowColumn(currentNumber, cellParent.CellIdx, position);
+            HighlightWrongTile();
+
+            Debug.Log($"The current number {InputController.Instance.SelectedNumber} it is not the same as {solutionNumber}");
+            return;
+        }
     }
 
     public void HighlightTile()

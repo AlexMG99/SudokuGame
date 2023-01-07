@@ -4,36 +4,16 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class NumberSelection : MonoBehaviour, IPointerClickHandler
+public class NumberSelection : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI numberText;
 
     private int numberValue = -1;
-    private bool isSelected = false;
-
-    #region IPointerEvent
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        OnClicked();
-        Debug.Log("NumberTile was clicked");
-    }
-
-    #endregion
+    //private bool isSelected = false;
 
     #region PrivateFunction
-    private void OnClicked()
-    {
-        if (isSelected)
-        {
-            InputController.Instance.ChangeSelectedNumber(-1);
-        }
-        else
-        {
-            InputController.Instance.ChangeSelectedNumber(numberValue);
-            HighlightNumber();
-        }
-    }
+    
     #endregion
 
     #region PublicFunction
@@ -48,17 +28,22 @@ public class NumberSelection : MonoBehaviour, IPointerClickHandler
         numberText.color = SkinController.Instance.CurrentGridSkin.UITextColor;
     }
 
+    public void OnClicked()
+    {
+        InputController.Instance.ChangeSelectedNumber(numberValue);
+        HighlightNumber();
+    }
 
     public void LowlightNumber()
     {
         numberText.color = SkinController.Instance.CurrentGridSkin.UITextIdleColor;
-        isSelected = false;
+        //isSelected = false;
     }
 
     public void HighlightNumber()
     {
         numberText.color = SkinController.Instance.CurrentGridSkin.UITextSelectColor;
-        isSelected = true;
+        //isSelected = true;
     }
     #endregion
 }

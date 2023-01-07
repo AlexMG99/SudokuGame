@@ -11,6 +11,8 @@ public class InputController : MonoBehaviourSingleton<InputController>
     private Transform numberSelectionParent;
     private List<NumberSelection> numberSelections = new List<NumberSelection>();
 
+    private Tile selectedTile;
+
     #region MonoBehaviourFunctions
     public void Start()
     {
@@ -36,7 +38,10 @@ public class InputController : MonoBehaviourSingleton<InputController>
     public void ChangeSelectedNumber(int newNumber)
     {
         selectedNumber = newNumber;
-        LowlightNumberSelectionNumbers();
+
+        if(selectedTile)
+            selectedTile.CheckNumber();
+        //LowlightNumberSelectionNumbers();
     }
 
     public void LowlightNumberSelectionNumbers()
@@ -45,6 +50,11 @@ public class InputController : MonoBehaviourSingleton<InputController>
         {
             numberSelection.LowlightNumber();
         }
+    }
+
+    public void SetSelectedTile(Tile newTile)
+    {
+        selectedTile = newTile;
     }
     #endregion
 }
