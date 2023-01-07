@@ -27,17 +27,20 @@ public abstract class ClickableImage : MonoBehaviour, IPointerClickHandler, IPoi
     #region IEventHandler
     public void OnPointerClick(PointerEventData eventData)
     {
-        OnClicked();
+        if(GameManager.Instance.GameState == GameManager.GameStatus.PLAY)
+            OnClicked();
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        OnClickEnter();
+        if (GameManager.Instance.GameState == GameManager.GameStatus.PLAY)
+            OnClickEnter();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        OnClickExit();
+        if (GameManager.Instance.GameState == GameManager.GameStatus.PLAY)
+            OnClickExit();
     }
     #endregion
 

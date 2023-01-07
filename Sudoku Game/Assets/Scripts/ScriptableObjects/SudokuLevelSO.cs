@@ -13,11 +13,15 @@ public class SudokuLevelSO : ScriptableObject
     [SerializeField]
     private string[] numberHide = new string[9];
 
-    private LevelDifficulty LevelDifficulty1 => levelDifficulty;
+    public LevelDifficult LevelDifficulty => levelDifficulty;
     [SerializeField]
-    private LevelDifficulty levelDifficulty;
-    
-    enum LevelDifficulty
+    private LevelDifficult levelDifficulty;
+
+    public int MaxMistakes => maxMisatkes;
+    [SerializeField]
+    private int maxMisatkes = 3;
+
+    public enum LevelDifficult
     {
         EASY = 0,
         MEDIUM,
@@ -30,11 +34,11 @@ public class SudokuLevelSO : ScriptableObject
         // Hides numbers
         switch (levelDifficulty)
         {
-            case LevelDifficulty.EASY:
+            case LevelDifficult.EASY:
                 break;
-            case LevelDifficulty.MEDIUM:
+            case LevelDifficult.MEDIUM:
                 break;
-            case LevelDifficulty.HARD:
+            case LevelDifficult.HARD:
                 break;
             default:
                 break;

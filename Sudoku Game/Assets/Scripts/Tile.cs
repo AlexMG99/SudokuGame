@@ -64,6 +64,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     private void OnClicked()
     {
+        if (GameManager.Instance.GameState != GameManager.GameStatus.PLAY)
+            return;
+
         if (isLocked || isSolved)
         {
             // Highlight same number in other cells
@@ -185,7 +188,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
             HighlightSelectedTile();
 
-            cellParent.CheckCellSolved();
+            cellParent.CheckCellSolved(true);
 
             return true;
         }
@@ -193,6 +196,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         {
             UpdateNumberText(InputController.Instance.SelectedNumber);
             isWrong = true;
+            GridController.Instance.LevelController.AddMistake();
 
             GridController.Instance.HiglightWrongNumberRowColumn(currentNumber, cellParent.CellIdx, position);
             HighlightWrongTile();

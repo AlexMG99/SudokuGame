@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using System;
 
 public class LevelController : MonoBehaviour
 {
@@ -17,17 +19,70 @@ public class LevelController : MonoBehaviour
     private SudokuLevelSO currentLevel;
     private int currentLevelIdx = 0;
 
-    //private int gameplayTime = 0f;
+    [Header("UI elements")]
+    [SerializeField] private TextMeshProUGUI levelDifficultyText;
+    [SerializeField] private TextMeshProUGUI mistakesText;
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI gameplayTimeText;
+
+    private int levelScore = 0;
+    private int mistakes = 0;
+    private int maxMistakes = 0;
+
+    // Time
+    private float timeElapsed = 0f;
+    private int minutes, seconds;
 
     #region MonoBehaviourFunctions
-    void Awake()
+    void Start()
     {
+        Init();
+    }
 
+    void Update()
+    {
+        if (GameManager.Instance.GameState != GameManager.GameStatus.PLAY)
+            return;
+
+        timeElapsed += Time.deltaTime;
+        minutes = (int)(timeElapsed / 60f);
+        seconds = (int)(timeElapsed - minutes * 60f);
+
+        gameplayTimeText.text = string.Format("{0:D2}:{1:D2}", minutes, seconds);
     }
 
     #endregion
 
     #region PrivateFunctions
+    private void Init()
+    {
+        // Level Text
+        string levelDifficultyString = "None";
+        switch (currentLevel.LevelDifficulty)
+        {
+            case SudokuLevelSO.LevelDifficult.EASY:
+                levelDifficultyString = "Easy";
+                break;
+            case SudokuLevelSO.LevelDifficult.MEDIUM:
+                levelDifficultyString = "Medium";
+                break;
+            case SudokuLevelSO.LevelDifficult.HARD:
+                levelDifficultyString = "Hard";
+                break;
+            default:
+                break;
+        }
+
+        levelDifficultyText.text = levelDifficultyString;
+
+        // Mistakes
+        maxMistakes = currentLevel.MaxMistakes;
+        mistakesText.text = $"Mistakes {mistakes}/{maxMistakes}";
+
+        // Score
+        scoreText.text = levelScore.ToString();
+
+    }
 
     #endregion
 
@@ -44,6 +99,18 @@ public class LevelController : MonoBehaviour
 
         if (!currentLevel.CheckIfLevelValid())
             Debug.LogError("Level No Valid!");
+    }
+
+    public void AddMistake()
+    {
+        if (GameManager.Instance.GameState != GameManager.GameStatus.PLAY)
+            return;
+
+        mistakes++;
+        mistakesText.text = $"Mistakes {mistakes}/{maxMistakes}";
+
+        if (mistakes >= maxMistakes)
+            GameManager.Instance.LoseGame();
     }
     #endregion
 }

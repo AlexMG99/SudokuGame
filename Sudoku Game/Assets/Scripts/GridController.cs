@@ -12,6 +12,7 @@ public class GridController : MonoBehaviourSingleton<GridController>
 
     private List<Cell> cells = new List<Cell>();
 
+    public LevelController LevelController => levelController;
     private LevelController levelController;
 
     #region MonoBehaviourFunctions
@@ -81,24 +82,16 @@ public class GridController : MonoBehaviourSingleton<GridController>
     #endregion
 
     #region PublicFunctions
-    public void HiglightNumberInCells(int number)
-    {
-        foreach(Cell cell in cells)
-        {
-            cell.HighlightNumberInCell(number);
-        }
-    }
 
-    public void HiglightWrongNumberRowColumn(int number, int cellIdx, Vector2Int position)
+    public void CheckIfGameIsWin()
     {
-        DownlightAllCells();
-
         foreach (Cell cell in cells)
         {
-            cell.HighlightCellRowColumn(cellIdx, position);
-            //cell.HighlightWrongNumberInCell(number);
-            cell.HighlightWrongNumberRowColumn(number, position);
+            if (!cell.IsCellSolved())
+                return;
         }
+
+        GameManager.Instance.WinGame();
     }
 
     public Tile FindTileByPosition(Vector2Int position)
@@ -141,6 +134,35 @@ public class GridController : MonoBehaviourSingleton<GridController>
         return new Action<int>(ActionType.None, -1, Vector2Int.zero);
     }
 
+    public void UpdateSkins()
+    {
+        SetSkin();
+        foreach (Cell cell in cells)
+        {
+            cell.UpdateSkins();
+        }
+    }
+
+    public void HiglightNumberInCells(int number)
+    {
+        foreach(Cell cell in cells)
+        {
+            cell.HighlightNumberInCell(number);
+        }
+    }
+
+    public void HiglightWrongNumberRowColumn(int number, int cellIdx, Vector2Int position)
+    {
+        DownlightAllCells();
+
+        foreach (Cell cell in cells)
+        {
+            cell.HighlightCellRowColumn(cellIdx, position);
+            //cell.HighlightWrongNumberInCell(number);
+            cell.HighlightWrongNumberRowColumn(number, position);
+        }
+    }
+
     public void HiglightCellRowColumnNumber(int number, int cellIdx, Vector2Int position)
     {
         DownlightAllCells();
@@ -152,7 +174,6 @@ public class GridController : MonoBehaviourSingleton<GridController>
         }
     }
 
-
     public void HiglightCellRowColumn(int cellIdx, Vector2Int position)
     {
         DownlightAllCells();
@@ -160,15 +181,6 @@ public class GridController : MonoBehaviourSingleton<GridController>
         foreach (Cell cell in cells)
         {
             cell.HighlightCellRowColumn(cellIdx, position);
-        }
-    }
-
-    public void UpdateSkins()
-    {
-        SetSkin();
-        foreach (Cell cell in cells)
-        {
-            cell.UpdateSkins();
         }
     }
 

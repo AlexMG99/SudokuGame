@@ -171,7 +171,7 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void CheckCellSolved()
+    public void CheckCellSolved(bool isNewNumber = false)
     {
         foreach (Tile tile in tiles)
         {
@@ -183,6 +183,9 @@ public class Cell : MonoBehaviour
         }
 
         isCellSolved = true;
+
+        if(isNewNumber)
+            GridController.Instance.CheckIfGameIsWin();
     }
 
     public bool IsCellSolved()

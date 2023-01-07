@@ -40,7 +40,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
     #region PublicsFunctions
     public void ChangeSelectedNumber(int newNumber)
     {
-        if (!selectedTile)
+        if (!selectedTile || GameManager.Instance.GameState != GameManager.GameStatus.PLAY)
             return;
 
         selectedNumber = newNumber;
@@ -74,7 +74,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
 
     public void AddNoteNumber(int newNumber)
     {
-        if (!selectedTile || selectedTile.IsSolved() || selectedTile.IsWrong())
+        if (!selectedTile || selectedTile.IsSolved() || selectedTile.IsWrong() || GameManager.Instance.GameState != GameManager.GameStatus.PLAY)
             return;
 
         selectedNumber = newNumber - 1;
