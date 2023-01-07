@@ -8,6 +8,7 @@ namespace Helper.Actions
     {
         None = -1,
         AddValue,
+        ChangeValue,
         RemoveValue,
         AddNoteValue,
         RemoveNoteValue
@@ -19,12 +20,15 @@ namespace Helper.Actions
         [SerializeField]
         public ActionType actionType;
         [SerializeField]
+        public Vector2Int position;
+        [SerializeField]
         public T value;
 
-        public Action(ActionType actionType, T value)
+        public Action(ActionType actionType, T value, Vector2Int position)
         {
             this.actionType = actionType;
             this.value = value;
+            this.position = position;
         }
     }
 }

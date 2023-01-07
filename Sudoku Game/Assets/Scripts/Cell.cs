@@ -133,6 +133,20 @@ public class Cell : MonoBehaviour
     #endregion
 
     #region PublicFunctions
+    public bool FindTileByPosition(Vector2Int position, out Tile tileOut)
+    {
+        foreach (Tile tile in tiles)
+        {
+            if (tile.Position == position)
+            {
+                tileOut = tile;
+                return true;
+            }
+        }
+
+        tileOut = null;
+        return false;
+    }
 
     public void UpdateSkins()
     {

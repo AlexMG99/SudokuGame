@@ -8,17 +8,8 @@ public class UndoButton : ClickableImage
     protected override void OnClicked()
     {
         StartCoroutine(Clicked());
+
+        InputController.Instance.UndoMovement();
     }
-
-    /*protected override void OnClickEnter()
-    {
-        StartCoroutine(ClickEnter());
-    }
-
-    protected override void OnClickExit()
-    {
-        StartCoroutine(ClickExit());
-    }*/
-
 
 }

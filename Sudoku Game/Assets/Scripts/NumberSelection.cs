@@ -10,7 +10,6 @@ public class NumberSelection : MonoBehaviour
     private TextMeshProUGUI numberText;
 
     private int numberValue = -1;
-    //private bool isSelected = false;
 
     #region MonoBehaviourFunctions
     private void Start()

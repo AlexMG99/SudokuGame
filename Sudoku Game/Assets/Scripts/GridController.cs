@@ -100,6 +100,19 @@ public class GridController : MonoBehaviourSingleton<GridController>
         }
     }
 
+    public Tile FindTileByPosition(Vector2Int position)
+    {
+        Tile tileInPosition = null;
+
+        foreach (Cell cell in cells)
+        {
+            if (cell.FindTileByPosition(position, out tileInPosition))
+                return tileInPosition;
+        }
+
+        return null;
+    }
+
     public void HiglightCellRowColumnNumber(int number, int cellIdx, Vector2Int position)
     {
         DownlightAllCells();

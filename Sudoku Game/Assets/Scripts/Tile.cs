@@ -176,6 +176,32 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return true;
     }
 
+    public bool RemoveSolvedNumber()
+    {
+        // Set number to blank
+        currentNumber = -1;
+        numberTMP.text = " ";
+
+        isSolved = false;
+
+        // Refresh selected Tiles
+        GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
+        HighlightSelectedTile();
+
+        return true;
+    }
+
+    public void SetNumber(int number)
+    {
+        // Set number to blank
+        currentNumber = number;
+        numberTMP.text = (currentNumber == -1) ? " " : currentNumber.ToString();
+
+        // Refresh selected Tiles
+        GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
+        HighlightSelectedTile();
+    }
+
     public void HighlightTile()
     {
         isHighlight = true;
@@ -237,6 +263,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public bool IsWrong()
     {
         return isWrong;
+    }
+
+    public bool IsEmpty()
+    {
+        return currentNumber == -1;
     }
 
     #endregion
