@@ -21,6 +21,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private Vector2Int position;
 
     private int solutionNumber;
+    public int CurrentNumber => currentNumber;
     private int currentNumber;
 
     private Cell cellParent;
@@ -159,6 +160,22 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    public bool RemoveNumber()
+    {
+        if (IsSolved())
+            return false;
+
+        // Set number to blank
+        currentNumber = -1;
+        numberTMP.text = " ";
+
+        // Refresh selected Tiles
+        GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
+        HighlightSelectedTile();
+
+        return true;
+    }
+
     public void HighlightTile()
     {
         isHighlight = true;
@@ -215,6 +232,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public bool CheckNumber(int number)
     {
         return number == solutionNumber;
+    }
+
+    public bool IsWrong()
+    {
+        return isWrong;
     }
 
     #endregion

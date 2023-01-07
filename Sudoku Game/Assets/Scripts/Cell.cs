@@ -106,7 +106,7 @@ public class Cell : MonoBehaviour
         {
             if (tile.Position.x == position.x || tile.Position.y == position.y)
             {
-                if(tile.CheckCurrentNumber(number))
+                if(tile.CheckCurrentNumber(number) && !tile.IsWrong())
                     tile.HighlightWrongTile();
             }
         }

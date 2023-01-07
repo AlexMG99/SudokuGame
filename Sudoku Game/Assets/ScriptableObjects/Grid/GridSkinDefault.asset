@@ -17,3 +17,5 @@ MonoBehaviour:
   uiTextColor: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
   uiTextSelectColor: {r: 0.21018584, g: 0.23917702, b: 0.273, a: 1}
   uiTextIdleColor: {r: 0.34117648, g: 0.38823533, b: 0.4431373, a: 1}
+  buttonIdleColor: {r: 0.47450984, g: 0.49411768, b: 0.5372549, a: 1}
+  buttonHoverColor: {r: 0.2871359, g: 0.29975727, b: 0.325, a: 1}

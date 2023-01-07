@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Helper.Actions;
 
 public class InputController : MonoBehaviourSingleton<InputController>
 {
@@ -8,8 +9,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
     private int selectedNumber = -1;
 
     [SerializeField]
-    private Transform numberSelectionParent;
-    private List<NumberSelection> numberSelections = new List<NumberSelection>();
+    private List<Action<int>> actionQueue = new List<Action<int>>();
 
     private Tile selectedTile;
 
@@ -23,12 +23,6 @@ public class InputController : MonoBehaviourSingleton<InputController>
     #region PrivateFunctions
     private void Init()
     {
-        numberSelections.AddRange(numberSelectionParent.GetComponentsInChildren<NumberSelection>());
-
-        foreach (NumberSelection numberSelection in numberSelections)
-        {
-            numberSelection.Init();
-        }
     }
 
     
@@ -39,16 +33,24 @@ public class InputController : MonoBehaviourSingleton<InputController>
     {
         selectedNumber = newNumber;
 
+        // Add removed number to actionQueue
+        if (!selectedTile.IsSolved() && selectedTile.IsWrong())
+           actionQueue.Add(new Action<int>(ActionType.RemoveValue, selectedTile.CurrentNumber));
+
         if(selectedTile)
             selectedTile.CheckNumber();
-        //LowlightNumberSelectionNumbers();
+
+        // Add action to queue
+        actionQueue.Add(new Action<int>(ActionType.AddValue, selectedNumber));
     }
 
-    public void LowlightNumberSelectionNumbers()
+    public void RemoveNumberOnTile()
     {
-        foreach (NumberSelection numberSelection in numberSelections)
+        if (selectedTile)
         {
-            numberSelection.LowlightNumber();
+            int tileNumber = selectedTile.CurrentNumber;
+            if (selectedTile.RemoveNumber())
+                actionQueue.Add(new Action<int>(ActionType.RemoveValue, tileNumber));
         }
     }
 

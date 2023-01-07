@@ -26,4 +26,12 @@ public class GridSkinSO : ScriptableObject
     private Color uiTextIdleColor;
     public Color UITextIdleColor => uiTextIdleColor;
 
+    [SerializeField]
+    private Color buttonIdleColor;
+    public Color ButtonIdleColor => buttonIdleColor;
+
+    [SerializeField]
+    private Color buttonHoverColor;
+    public Color ButtonHoverColor => buttonHoverColor;
+
 }

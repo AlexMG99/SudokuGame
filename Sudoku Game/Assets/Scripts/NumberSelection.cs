@@ -12,8 +12,12 @@ public class NumberSelection : MonoBehaviour
     private int numberValue = -1;
     //private bool isSelected = false;
 
-    #region PrivateFunction
-    
+    #region MonoBehaviourFunctions
+    private void Start()
+    {
+        Init();
+    }
+
     #endregion
 
     #region PublicFunction
@@ -37,13 +41,11 @@ public class NumberSelection : MonoBehaviour
     public void LowlightNumber()
     {
         numberText.color = SkinController.Instance.CurrentGridSkin.UITextIdleColor;
-        //isSelected = false;
     }
 
     public void HighlightNumber()
     {
         numberText.color = SkinController.Instance.CurrentGridSkin.UITextSelectColor;
-        //isSelected = true;
     }
     #endregion
 }
