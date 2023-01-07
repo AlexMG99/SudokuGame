@@ -16,6 +16,8 @@ public class Cell : MonoBehaviour
     public int CellIdx => cellIdx;
     private int cellIdx = -1;
 
+    private bool isCellSolved = false;
+
     #region MonoBehaviourFunctions
     private void Awake()
     {
@@ -166,6 +168,54 @@ public class Cell : MonoBehaviour
                 ,i + 3 * (cellIdx - Mathf.FloorToInt(i / 3) - Mathf.FloorToInt(cellIdx / 3) * 3));
             tiles[i].SetNumber(solutionNumbers[i], lockedNumbers[i], tilePosition);
         }
+    }
+
+    public void CheckCellSolved()
+    {
+        foreach (Tile tile in tiles)
+        {
+            if (!tile.IsSolved())
+            {
+                isCellSolved = false;
+                return;
+            }
+        }
+
+        isCellSolved = true;
+    }
+
+    public bool IsCellSolved()
+    {
+        return isCellSolved;
+    }
+
+    public bool UseHintOnTile()
+    {
+        int tryFindRandomCell = 0;
+
+        while (tryFindRandomCell < 6)
+        {
+            int randomRange = Random.Range(0, tiles.Count);
+
+            if (!tiles[randomRange].IsSolved())
+            {
+                tiles[randomRange].SolveNumber();
+                return true;
+            }
+
+            tryFindRandomCell++;
+        }
+
+        foreach (Tile tile in tiles)
+        {
+            if (!tile.IsSolved())
+            {
+                tile.SolveNumber();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void HighlightNumberInCell(int number)

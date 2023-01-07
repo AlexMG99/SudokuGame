@@ -113,6 +113,35 @@ public class GridController : MonoBehaviourSingleton<GridController>
         return null;
     }
 
+    public bool UseHintOnCell()
+    {
+        int tryFindRandomCell = 0;
+
+        while (tryFindRandomCell < 3)
+        {
+            int randomRange = Random.Range(0, cells.Count);
+
+            if (!cells[randomRange].IsCellSolved())
+            {
+                cells[randomRange].UseHintOnTile();
+                return true;
+            }
+
+            tryFindRandomCell++;
+        }
+
+        foreach (Cell cell in cells)
+        {
+            if (!cell.IsCellSolved())
+            {
+                cell.UseHintOnTile();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void HiglightCellRowColumnNumber(int number, int cellIdx, Vector2Int position)
     {
         DownlightAllCells();
@@ -151,5 +180,6 @@ public class GridController : MonoBehaviourSingleton<GridController>
             cell.DownlightCell();
         }
     }
+
     #endregion
 }

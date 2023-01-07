@@ -16,8 +16,10 @@ public abstract class ClickableImage : MonoBehaviour, IPointerClickHandler, IPoi
 
 
     #region MonoBehaviourFunctions
+
     public virtual void Start()
     {
+        Init();
         SetSkin();
     }
     #endregion
@@ -45,6 +47,8 @@ public abstract class ClickableImage : MonoBehaviour, IPointerClickHandler, IPoi
     protected virtual void OnClickEnter() {}
 
     protected virtual void OnClickExit() {}
+
+    protected virtual void Init() { }
 
     public virtual void SetSkin()
     {

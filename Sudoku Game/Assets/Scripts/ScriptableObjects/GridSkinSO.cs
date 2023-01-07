@@ -34,4 +34,8 @@ public class GridSkinSO : ScriptableObject
     private Color buttonHoverColor;
     public Color ButtonHoverColor => buttonHoverColor;
 
+    [SerializeField]
+    private Color imageColor;
+    public Color ImageColor => imageColor;
+
 }

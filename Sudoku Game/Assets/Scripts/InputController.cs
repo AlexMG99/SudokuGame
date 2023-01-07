@@ -16,9 +16,13 @@ public class InputController : MonoBehaviourSingleton<InputController>
 
     private bool isNotesMode = false;
 
+    public int HintCount => hintCount;
+    private int hintCount = 0;
+
     #region MonoBehaviourFunctions
-    public void Start()
+    public override void Awake()
     {
+        base.Awake();
         Init();
     }
     #endregion
@@ -26,6 +30,8 @@ public class InputController : MonoBehaviourSingleton<InputController>
     #region PrivateFunctions
     private void Init()
     {
+        PlayerPrefs.SetInt("Hints", 10);
+        hintCount = PlayerPrefs.GetInt("Hints", 0);
     }
 
     
@@ -82,6 +88,15 @@ public class InputController : MonoBehaviourSingleton<InputController>
         {
             actionQueue.Add(new Action<int>(ActionType.RemoveNoteValue, selectedNumber, selectedTile.Position));
         }
+    }
+
+    public void UseHint()
+    {
+        if (hintCount <= 0)
+            return;
+
+        if(GridController.Instance.UseHintOnCell())
+            hintCount--;
     }
 
     public void RemoveNumberOnTile()

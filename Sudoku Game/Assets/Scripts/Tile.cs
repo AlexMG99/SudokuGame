@@ -147,6 +147,23 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         cellParent = cell;
     }
 
+    public void SolveNumber()
+    {
+        UpdateNumberText(solutionNumber);
+        isSolved = true;
+
+        if (isWrong)
+        {
+            isWrong = false;
+            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
+        }
+
+        GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
+        HighlightSelectedTile();
+
+        cellParent.CheckCellSolved();
+    }
+
     public bool CheckNumber()
     {
         DisableNotes();
@@ -164,6 +181,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
             HighlightSelectedTile();
+
+            cellParent.CheckCellSolved();
 
             return true;
         }
@@ -225,6 +244,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         numberTMP.text = " ";
 
         isSolved = false;
+        cellParent.CheckCellSolved();
 
         // Refresh selected Tiles
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
