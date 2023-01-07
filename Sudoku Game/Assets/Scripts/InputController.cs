@@ -14,6 +14,8 @@ public class InputController : MonoBehaviourSingleton<InputController>
 
     private Tile selectedTile;
 
+    private bool isNotesMode = false;
+
     #region MonoBehaviourFunctions
     public void Start()
     {
@@ -39,20 +41,47 @@ public class InputController : MonoBehaviourSingleton<InputController>
 
         // Add removed number to actionQueue
         bool valueChanged = false;
-        if (!selectedTile.IsSolved() && selectedTile.IsWrong())
+        if (!selectedTile.IsSolved())
         {
-            actionQueue.Add(new Action<int>(ActionType.RemoveValue, selectedTile.CurrentNumber, selectedTile.Position));
+            if(selectedTile.IsWrong())
+                actionQueue.Add(new Action<int>(ActionType.RemoveValueWrong, selectedTile.CurrentNumber, selectedTile.Position));
+            else
+                actionQueue.Add(new Action<int>(ActionType.RemoveValue, selectedTile.CurrentNumber, selectedTile.Position));
+
             valueChanged = true;
         }
 
-        if(selectedTile)
-            selectedTile.CheckNumber();
+        if (selectedTile)
+        {
+            // Add action to queue
+            if (selectedTile.CheckNumber())
+                actionQueue.Add(new Action<int>(ActionType.AddValue, selectedNumber, selectedTile.Position));
+            else
+                actionQueue.Add(new Action<int>(ActionType.AddValueWrong, selectedNumber, selectedTile.Position));
 
-        // Add action to queue
-        actionQueue.Add(new Action<int>(ActionType.AddValue, selectedNumber, selectedTile.Position));
+            if (valueChanged)
+                actionQueue.Add(new Action<int>(ActionType.ChangeValue, -1, selectedTile.Position));
+        }
 
-        if(valueChanged)
-            actionQueue.Add(new Action<int>(ActionType.ChangeValue, -1, selectedTile.Position));
+        
+    }
+
+    public void AddNoteNumber(int newNumber)
+    {
+        if (!selectedTile || selectedTile.IsSolved() || selectedTile.IsWrong())
+            return;
+
+        selectedNumber = newNumber - 1;
+
+        if (selectedTile.SetNoteNumber(selectedNumber))
+        {
+            actionQueue.Add(new Action<int>(ActionType.AddNoteValue, selectedNumber, selectedTile.Position));
+            
+        }
+        else
+        {
+            actionQueue.Add(new Action<int>(ActionType.RemoveNoteValue, selectedNumber, selectedTile.Position));
+        }
     }
 
     public void RemoveNumberOnTile()
@@ -88,11 +117,19 @@ public class InputController : MonoBehaviourSingleton<InputController>
                     UndoMovement();
                     break;
                 case ActionType.RemoveValue:
-                    actionTile.SetNumber(lastAction.value);
+                    actionTile.SetNumber(lastAction.value, false);
+                    break;
+                case ActionType.AddValueWrong:
+                    actionTile.RemoveNumber(false);
+                    break;
+                case ActionType.RemoveValueWrong:
+                    actionTile.SetNumber(lastAction.value, true);
                     break;
                 case ActionType.AddNoteValue:
-                    break;
                 case ActionType.RemoveNoteValue:
+                    actionTile.SetNoteNumber(lastAction.value);
+                    GridController.Instance.HiglightCellRowColumn(actionTile.CellParent.CellIdx, actionTile.Position);
+                    actionTile.HighlightSelectedTile();
                     break;
                 case ActionType.None:
                 default:
@@ -110,6 +147,16 @@ public class InputController : MonoBehaviourSingleton<InputController>
     public void SetSelectedTile(Tile newTile)
     {
         selectedTile = newTile;
+    }
+
+    public bool IsNotesMode()
+    {
+        return isNotesMode;
+    }
+
+    public void SetNotesMode(bool value)
+    {
+        isNotesMode = value;
     }
     #endregion
 }

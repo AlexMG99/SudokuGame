@@ -24,6 +24,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public int CurrentNumber => currentNumber;
     private int currentNumber;
 
+    public Cell CellParent => cellParent;
     private Cell cellParent;
 
     private bool isLocked = false;
@@ -52,7 +53,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     #region PrivateFunctions
     private void Init()
     {
-        notes.AddRange(transform.GetComponentsInChildren<TextMeshProUGUI>());
+        notes.AddRange(noteContainer.GetComponentsInChildren<TextMeshProUGUI>());
+
+        foreach (TextMeshProUGUI textNote in notes)
+        {
+            textNote.enabled = false;
+        }
     }
 
     private void OnClicked()
@@ -61,6 +67,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         {
             // Highlight same number in other cells
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
+
+            InputController.Instance.SetSelectedTile(null);
         }
         else
         {
@@ -90,6 +98,14 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             numberTMP.text = solutionNumber.ToString();
         else
             numberTMP.text = (currentNumber == -1) ? " " : currentNumber.ToString();
+    }
+
+    private void DisableNotes()
+    {
+        foreach (TextMeshProUGUI textNote in notes)
+        {
+            textNote.enabled = false;
+        }
     }
 
     #endregion
@@ -131,8 +147,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         cellParent = cell;
     }
 
-    public void CheckNumber()
+    public bool CheckNumber()
     {
+        DisableNotes();
+
         if (InputController.Instance.SelectedNumber == solutionNumber)
         {
             UpdateNumberText(InputController.Instance.SelectedNumber);
@@ -146,6 +164,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
             HighlightSelectedTile();
+
+            return true;
         }
         else
         {
@@ -156,7 +176,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             HighlightWrongTile();
 
             Debug.Log($"The current number {InputController.Instance.SelectedNumber} it is not the same as {solutionNumber}");
-            return;
+            return false;
         }
     }
 
@@ -176,6 +196,28 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return true;
     }
 
+    public bool RemoveNumber(bool isWrong)
+    {
+        if (IsSolved())
+            return false;
+
+        // Set number to blank
+        currentNumber = -1;
+        numberTMP.text = " ";
+
+        // Refresh selected Tiles
+        GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
+        HighlightSelectedTile();
+
+        this.isWrong = isWrong;
+
+        if (isWrong)
+            HighlightWrongTile();
+        else
+            HighlightSelectedTile();
+
+        return true;
+    }
     public bool RemoveSolvedNumber()
     {
         // Set number to blank
@@ -191,7 +233,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return true;
     }
 
-    public void SetNumber(int number)
+    public void SetNumber(int number, bool isWrong)
     {
         // Set number to blank
         currentNumber = number;
@@ -200,7 +242,31 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         // Refresh selected Tiles
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
         HighlightSelectedTile();
+
+        this.isWrong = isWrong;
+
+        if (isWrong)
+            HighlightWrongTile();
+        else
+            HighlightSelectedTile();
     }
+
+
+    // Notes handler
+    public bool SetNoteNumber(int noteNumber)
+    {
+        if (notes.Count == 0)
+        {
+            Debug.LogError($"Notes in tile {position} is empty!");
+            return false;
+        }
+
+        TextMeshProUGUI currentNote = notes[noteNumber];
+        currentNote.enabled = !currentNote.enabled;
+
+        return currentNote.enabled;
+    }
+
 
     public void HighlightTile()
     {

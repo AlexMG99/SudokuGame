@@ -129,6 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d93bb59bd85ad1547a18155357eb9442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonImage: {fileID: 4220275022323049310}
   numberText: {fileID: 3099988214136930719}
 --- !u!114 &933566207186011320
 MonoBehaviour:

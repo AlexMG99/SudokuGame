@@ -8,8 +8,10 @@ namespace Helper.Actions
     {
         None = -1,
         AddValue,
+        AddValueWrong,
         ChangeValue,
         RemoveValue,
+        RemoveValueWrong,
         AddNoteValue,
         RemoveNoteValue
     }

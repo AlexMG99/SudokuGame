@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class NumberSelection : MonoBehaviour
 {
+    [SerializeField]
+    private Image buttonImage;
     [SerializeField]
     private TextMeshProUGUI numberText;
 
@@ -29,12 +32,20 @@ public class NumberSelection : MonoBehaviour
     public void SetSkin()
     {
         numberText.color = SkinController.Instance.CurrentGridSkin.UITextColor;
+        buttonImage.color = SkinController.Instance.CurrentGridSkin.BackgroundColor;
     }
 
     public void OnClicked()
     {
-        InputController.Instance.ChangeSelectedNumber(numberValue);
-        HighlightNumber();
+        if (!InputController.Instance.IsNotesMode())
+        {
+            InputController.Instance.ChangeSelectedNumber(numberValue);
+            HighlightNumber();
+        }
+        else
+        {
+            InputController.Instance.AddNoteNumber(numberValue);
+        }
     }
 
     public void LowlightNumber()
