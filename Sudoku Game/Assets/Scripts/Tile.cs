@@ -32,6 +32,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     private bool isLocked = false;
     private bool isSolved = false;
+    private bool isWrong = false;
     private TileStatus tileStatus = TileStatus.UNSELECTED;
 
     public enum TileStatus
@@ -39,8 +40,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         UNSELECTED,
         HOVER,
         SELECTED,
-        SAMENUMBER,
-        WRONG
+        SAMENUMBER
     }
 
     #region MonoBehaviourFunctions
@@ -167,19 +167,19 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             case TileStatus.SAMENUMBER:
                 tileImage.color = SkinController.Instance.CurrentTileSkin.TileSameNumberColor;
                 break;
-            case TileStatus.WRONG:
-                tileImage.color = SkinController.Instance.CurrentTileSkin.TileWrongColor;
-                break;
             default:
                 break;
         }
 
         borderImage.color = SkinController.Instance.CurrentTileSkin.TileBorderColor;
 
-        if(isLocked)
+        if (isLocked)
             numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberLockColor;
         else if (IsWrong())
+        {
             numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberWrongColor;
+            tileImage.color = SkinController.Instance.CurrentTileSkin.TileWrongColor;
+        }
         else
             numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
 
@@ -260,7 +260,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         else
         {
             UpdateNumberText(InputController.Instance.SelectedNumber);
-            tileStatus = TileStatus.WRONG;
+            isWrong = true;
             GridController.Instance.LevelController.AddMistake();
 
             GridController.Instance.HiglightWrongNumberRowColumn(currentNumber, cellParent.CellIdx, position);
@@ -331,7 +331,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return true;
     }
 
-    public void SetNumber(int number, TileStatus newStatus)
+    public void SetNumber(int number, bool isWrong)
     {
         // Set number to blank
         currentNumber = number;
@@ -341,7 +341,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
         HighlightSelectedTile();
 
-        tileStatus = newStatus;
+        this.isWrong = isWrong;
 
         if (IsWrong())
             HighlightWrongTile();
@@ -390,8 +390,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public void HighlightWrongTile()
     {
         tileImage.color = SkinController.Instance.CurrentTileSkin.TileWrongColor;
-        
-        if(IsWrong())
+        tileStatus = TileStatus.SELECTED;
+
+        if (IsWrong())
             numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberWrongColor;
     }
 
@@ -424,7 +425,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public bool IsWrong()
     {
-        return tileStatus == TileStatus.WRONG;
+        return isWrong;
     }
 
     public bool IsEmpty()

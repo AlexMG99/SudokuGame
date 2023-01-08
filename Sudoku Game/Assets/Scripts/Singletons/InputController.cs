@@ -154,13 +154,13 @@ public class InputController : MonoBehaviourSingleton<InputController>
                     UndoMovement();
                     break;
                 case ActionType.RemoveValue:
-                    actionTile.SetNumber(lastAction.value, Tile.TileStatus.UNSELECTED);
+                    actionTile.SetNumber(lastAction.value, false);
                     break;
                 case ActionType.AddValueWrong:
                     actionTile.RemoveNumber(Tile.TileStatus.UNSELECTED);
                     break;
                 case ActionType.RemoveValueWrong:
-                    actionTile.SetNumber(lastAction.value, Tile.TileStatus.WRONG);
+                    actionTile.SetNumber(lastAction.value, true);
                     break;
                 case ActionType.AddNoteValue:
                 case ActionType.RemoveNoteValue:
