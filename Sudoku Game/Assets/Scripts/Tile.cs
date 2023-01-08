@@ -230,6 +230,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         currentNumber = -1;
         numberTMP.text = " ";
 
+        if (isWrong)
+            isWrong = false;
+
         // Refresh selected Tiles
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
         HighlightSelectedTile();

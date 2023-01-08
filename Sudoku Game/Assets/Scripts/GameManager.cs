@@ -13,6 +13,12 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         END
     }
 
+    [Header("End Screen UI")]
+    [SerializeField]
+    private GameObject winScreen;
+    [SerializeField]
+    private GameObject loseScreen;
+
     [Header("Pause UI")]
     [SerializeField]
     private Image pauseButtonImage;
@@ -20,6 +26,8 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     private Sprite playIcon;
     [SerializeField]
     private Sprite pauseIcon;
+    [SerializeField]
+    private GameObject pauseScreen;
 
     public GameStatus GameState => gameState;
     private GameStatus gameState = GameStatus.PLAY;
@@ -29,12 +37,16 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     {
         // UI Win appear
         gameState = GameStatus.END;
+
+        winScreen.SetActive(true);
     }
 
     public void LoseGame()
     {
         // UI Lose appear
         gameState = GameStatus.END;
+
+        loseScreen.SetActive(true);
     }
 
     public void PauseUnpauseGame()
@@ -43,17 +55,34 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         {
             gameState = GameStatus.PAUSE;
             pauseButtonImage.sprite = playIcon;
+            pauseScreen.SetActive(true);
         }
         else if (gameState == GameStatus.PAUSE)
         {
             gameState = GameStatus.PLAY;
             pauseButtonImage.sprite = pauseIcon;
+            pauseScreen.SetActive(false);
         }
     }
 
     public void ResetLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ContinueLostLevel()
+    {
+        // See ad
+        loseScreen.SetActive(false);
+
+        gameState = GameStatus.PLAY;
+        GridController.Instance.LevelController.ResetLevel();
+    }
+
+    public void NextLevel()
+    {
+        gameState = GameStatus.PLAY;
+        GridController.Instance.LevelController.LoadNextLevel();
     }
     #endregion
 

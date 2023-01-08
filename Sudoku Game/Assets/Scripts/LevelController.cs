@@ -101,6 +101,24 @@ public class LevelController : MonoBehaviour
             Debug.LogError("Level No Valid!");
     }
 
+    public void ResetLevel()
+    {
+        // Set level values to 0
+        timeElapsed = 0f;
+        levelScore = 0;
+        mistakes = 0;
+
+        GridController.Instance.ResetLevel();
+    }
+
+    public void LoadNextLevel()
+    {
+        PlayerPrefs.SetInt("LevelIndex", currentLevelIdx + 1);
+
+        LoadLevel();
+        GridController.Instance.ResetLevel();
+    }
+
     public void AddMistake()
     {
         if (GameManager.Instance.GameState != GameManager.GameStatus.PLAY)

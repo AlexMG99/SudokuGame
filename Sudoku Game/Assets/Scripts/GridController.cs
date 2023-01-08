@@ -82,6 +82,11 @@ public class GridController : MonoBehaviourSingleton<GridController>
     #endregion
 
     #region PublicFunctions
+    public void ResetLevel()
+    {
+        SetGridLevel();
+        UpdateSkins();
+    }
 
     public void CheckIfGameIsWin()
     {

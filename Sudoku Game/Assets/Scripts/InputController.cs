@@ -115,7 +115,10 @@ public class InputController : MonoBehaviourSingleton<InputController>
             if (selectedTile.RemoveNumber())
             {
                 AudioSFX.Instance.PlaySFX("Eraser");
-                actionQueue.Add(new Action<int>(ActionType.RemoveValue, tileNumber, selectedTile.Position));
+                if(selectedTile.IsWrong())
+                    actionQueue.Add(new Action<int>(ActionType.RemoveValueWrong, tileNumber, selectedTile.Position));
+                else
+                    actionQueue.Add(new Action<int>(ActionType.RemoveValue, tileNumber, selectedTile.Position));
             }
             else
             {
