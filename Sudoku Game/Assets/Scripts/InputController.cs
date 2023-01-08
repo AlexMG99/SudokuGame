@@ -195,6 +195,11 @@ public class InputController : MonoBehaviourSingleton<InputController>
         actionQueue.Add(newAction);
     }
 
+    public void ClearQueue()
+    {
+        actionQueue.Clear();
+    }
+
     public void SetSelectedTile(Tile newTile)
     {
         selectedTile = newTile;

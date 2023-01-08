@@ -105,10 +105,15 @@ public class LevelController : MonoBehaviour
     {
         // Set level values to 0
         timeElapsed = 0f;
+
         levelScore = 0;
+        scoreText.text = levelScore.ToString();
+
         mistakes = 0;
+        mistakesText.text = mistakesText.text = $"Mistakes {mistakes}/{maxMistakes}";
 
         GridController.Instance.ResetLevel();
+        InputController.Instance.ClearQueue();
     }
 
     public void LoadNextLevel()
