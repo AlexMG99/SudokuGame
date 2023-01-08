@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Helper.Actions;
+using Audio.AudioSFX;
 
 public class InputController : MonoBehaviourSingleton<InputController>
 {
@@ -60,7 +61,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
         if (selectedTile)
         {
             // Add action to queue
-            if (selectedTile.CheckNumber())
+            if (selectedTile.CheckNewNumber())
                 actionQueue.Add(new Action<int>(ActionType.AddValue, selectedNumber, selectedTile.Position));
             else
                 actionQueue.Add(new Action<int>(ActionType.AddValueWrong, selectedNumber, selectedTile.Position));
@@ -99,6 +100,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
         if (hintAction.actionType != ActionType.None)
         {
             hintCount--;
+            AudioSFX.Instance.PlaySFX("Hint");
             actionQueue.Add(hintAction);
         }
     }
@@ -109,14 +111,25 @@ public class InputController : MonoBehaviourSingleton<InputController>
         {
             int tileNumber = selectedTile.CurrentNumber;
             if (selectedTile.RemoveNumber())
+            {
+                AudioSFX.Instance.PlaySFX("Eraser");
                 actionQueue.Add(new Action<int>(ActionType.RemoveValue, tileNumber, selectedTile.Position));
-        }    
+            }
+            else
+            {
+                AudioSFX.Instance.PlaySFX("Wrong");
+            }
+        }
+        else
+        {
+            AudioSFX.Instance.PlaySFX("Wrong");
+        }
         
     }
 
     public void UndoMovement()
     {
-        if(actionQueue.Count > 0)
+        if (actionQueue.Count > 0)
         {
             Action<int> lastAction = actionQueue.Last();
             actionQueue.Remove(lastAction);
@@ -156,9 +169,12 @@ public class InputController : MonoBehaviourSingleton<InputController>
                     break;
             }
 
+            if(lastAction.actionType != ActionType.ChangeValue)
+                AudioSFX.Instance.PlaySFX("Undo");
         }
         else
         {
+            AudioSFX.Instance.PlaySFX("Wrong");
             Debug.Log("The queue is empty, there is no more elements in list!");
         }
     }

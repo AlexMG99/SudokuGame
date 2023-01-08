@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -22,10 +20,11 @@ public class HintButton : ClickableImage
     protected override void OnClicked()
     {
         StartCoroutine(Clicked());
-
         InputController.Instance.UseHint();
-
-        hintCountText.text = InputController.Instance.HintCount.ToString();
+        if(InputController.Instance.HintCount <= 0)
+            hintCountText.text = "Ad";
+        else
+            hintCountText.text = InputController.Instance.HintCount.ToString();
     }
 
     public override void SetSkin()

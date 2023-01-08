@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
 using Helper.Actions;
+using Audio.AudioSFX;
 
 public class Tile : MonoBehaviour, IPointerClickHandler 
 {
@@ -68,7 +69,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.GameState != GameManager.GameStatus.PLAY)
             return;
 
-        if (isLocked || isSolved)
+        if (IsSolved())
         {
             // Highlight same number in other cells
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
@@ -85,10 +86,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                 GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
             else
                 GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
-
-            HighlightSelectedTile();
-
         }
+
+        HighlightSelectedTile();
     }
 
     private void UpdateNumberText(int number)
@@ -171,7 +171,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return new Action<int>(ActionType.AddValue, solutionNumber, position);
     }
 
-    public bool CheckNumber()
+    public bool CheckNewNumber()
     {
         DisableNotes();
 
@@ -179,12 +179,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         {
             UpdateNumberText(InputController.Instance.SelectedNumber);
             isSolved = true;
-            
-            if(isWrong)
-            {
+            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
+
+            if (isWrong)
                 isWrong = false;
-                numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
-            }
 
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
             HighlightSelectedTile();
@@ -192,6 +190,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             GridController.Instance.LevelController.AddScore(tileScore);
             tileScore = 0;
             cellParent.CheckCellSolved(true);
+
+            AudioSFX.Instance.PlaySFX("Good");
 
             return true;
         }
@@ -203,6 +203,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
             GridController.Instance.HiglightWrongNumberRowColumn(currentNumber, cellParent.CellIdx, position);
             HighlightWrongTile();
+
+            AudioSFX.Instance.PlaySFX("Wrong");
 
             Debug.Log($"The current number {InputController.Instance.SelectedNumber} it is not the same as {solutionNumber}");
             return false;
