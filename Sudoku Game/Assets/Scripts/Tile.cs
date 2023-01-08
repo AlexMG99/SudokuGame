@@ -107,10 +107,20 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     private void DisableNotes()
     {
-        foreach (TextMeshProUGUI textNote in notes)
+        int countDeactivateNotes = 0;
+        for(int i = 0; i < notes.Count; i++)
         {
-            textNote.enabled = false;
+            if(notes[i].enabled)
+            {
+                InputController.Instance.AddActionToQueue(new Action<int>(ActionType.RemoveNoteValue, i, Position));
+                countDeactivateNotes++;
+
+                notes[i].enabled = false;
+            }
         }
+
+        if(countDeactivateNotes > 0)
+            InputController.Instance.AddActionToQueue(new Action<int>(ActionType.RemoveAllNotes, countDeactivateNotes, Position));
     }
 
     #endregion

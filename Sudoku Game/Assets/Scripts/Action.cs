@@ -13,7 +13,8 @@ namespace Helper.Actions
         RemoveValue,
         RemoveValueWrong,
         AddNoteValue,
-        RemoveNoteValue
+        RemoveNoteValue,
+        RemoveAllNotes
     }
 
     [System.Serializable]

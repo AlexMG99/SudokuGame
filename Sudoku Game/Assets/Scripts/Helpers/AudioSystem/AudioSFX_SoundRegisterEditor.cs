@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Audio.AudioSFX
 {
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(AudioSFX_SFX))]
     public class AudioSFX_SoundRegisterEditor : PropertyDrawer
     {
@@ -87,4 +88,5 @@ namespace Audio.AudioSFX
             EditorGUI.EndProperty();
         }
     }
+#endif
 }

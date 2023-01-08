@@ -165,6 +165,12 @@ public class InputController : MonoBehaviourSingleton<InputController>
                     GridController.Instance.HiglightCellRowColumn(actionTile.CellParent.CellIdx, actionTile.Position);
                     actionTile.HighlightSelectedTile();
                     break;
+                case ActionType.RemoveAllNotes:
+                    for(int i = 0; i < lastAction.value; i++)
+                    {
+                        UndoMovement();
+                    }
+                    break;
                 case ActionType.None:
                 default:
                     Debug.LogError("Action has no type!");
@@ -179,6 +185,11 @@ public class InputController : MonoBehaviourSingleton<InputController>
             AudioSFX.Instance.PlaySFX("Wrong");
             Debug.Log("The queue is empty, there is no more elements in list!");
         }
+    }
+
+    public void AddActionToQueue(Action<int> newAction)
+    {
+        actionQueue.Add(newAction);
     }
 
     public void SetSelectedTile(Tile newTile)
