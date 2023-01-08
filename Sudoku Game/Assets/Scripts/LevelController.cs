@@ -112,5 +112,14 @@ public class LevelController : MonoBehaviour
         if (mistakes >= maxMistakes)
             GameManager.Instance.LoseGame();
     }
+
+    public void AddScore(int score)
+    {
+        if (GameManager.Instance.GameState != GameManager.GameStatus.PLAY)
+            return;
+
+        levelScore += score;
+        scoreText.text = levelScore.ToString();
+    }
     #endregion
 }

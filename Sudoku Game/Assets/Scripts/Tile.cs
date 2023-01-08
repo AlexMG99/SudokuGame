@@ -25,6 +25,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public int CurrentNumber => currentNumber;
     private int currentNumber;
 
+    private int tileScore = 30;
     public Cell CellParent => cellParent;
     private Cell cellParent;
 
@@ -188,6 +189,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
             HighlightSelectedTile();
 
+            GridController.Instance.LevelController.AddScore(tileScore);
+            tileScore = 0;
             cellParent.CheckCellSolved(true);
 
             return true;

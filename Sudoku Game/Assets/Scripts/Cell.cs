@@ -17,6 +17,7 @@ public class Cell : MonoBehaviour
     public int CellIdx => cellIdx;
     private int cellIdx = -1;
 
+    private int cellScore = 270;
     private bool isCellSolved = false;
 
     #region MonoBehaviourFunctions
@@ -182,6 +183,8 @@ public class Cell : MonoBehaviour
             }
         }
 
+        GridController.Instance.LevelController.AddScore(cellScore);
+        cellScore = 0;
         isCellSolved = true;
 
         if(isNewNumber)
