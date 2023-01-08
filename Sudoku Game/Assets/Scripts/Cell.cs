@@ -232,7 +232,7 @@ public class Cell : MonoBehaviour
 
     public void HighlightWrongNumberInCell(int number)
     {
-        Tile highlightTile = GetTileByCurrentNumber(number);
+        Tile highlightTile = GetTileByNumber(number);
         if (highlightTile)
             highlightTile.HighlightWrongTile();
     }

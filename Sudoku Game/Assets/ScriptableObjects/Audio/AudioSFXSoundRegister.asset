@@ -48,3 +48,8 @@ MonoBehaviour:
     minRandomPitch: 0.2
     maxRandomPitch: 0.2
     intensityFactor: 1
+  - ID: Notes
+    clip: {fileID: 8300000, guid: c7bd8e82d8de03449ba5ce000f2adb1b, type: 3}
+    minRandomPitch: 1
+    maxRandomPitch: 1
+    intensityFactor: 1

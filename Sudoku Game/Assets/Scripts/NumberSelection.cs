@@ -38,24 +38,9 @@ public class NumberSelection : MonoBehaviour
     public void OnClicked()
     {
         if (!InputController.Instance.IsNotesMode())
-        {
             InputController.Instance.ChangeSelectedNumber(numberValue);
-            HighlightNumber();
-        }
         else
-        {
             InputController.Instance.AddNoteNumber(numberValue);
-        }
-    }
-
-    public void LowlightNumber()
-    {
-        numberText.color = SkinController.Instance.CurrentGridSkin.UITextIdleColor;
-    }
-
-    public void HighlightNumber()
-    {
-        numberText.color = SkinController.Instance.CurrentGridSkin.UITextSelectColor;
     }
     #endregion
 }

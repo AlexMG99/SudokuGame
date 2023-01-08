@@ -89,6 +89,8 @@ public class InputController : MonoBehaviourSingleton<InputController>
         {
             actionQueue.Add(new Action<int>(ActionType.RemoveNoteValue, selectedNumber, selectedTile.Position));
         }
+
+        AudioSFX.Instance.PlaySFX("Notes");
     }
 
     public void UseHint()

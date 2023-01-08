@@ -158,7 +158,7 @@ public class GridController : MonoBehaviourSingleton<GridController>
         foreach (Cell cell in cells)
         {
             cell.HighlightCellRowColumn(cellIdx, position);
-            //cell.HighlightWrongNumberInCell(number);
+            cell.HighlightWrongNumberInCell(number);
             cell.HighlightWrongNumberRowColumn(number, position);
         }
     }
