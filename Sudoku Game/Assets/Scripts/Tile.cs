@@ -127,6 +127,22 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     #region PublicFunctions
 
+    public void ResetTile()
+    {
+        isWrong = false;
+
+        if (!isLocked)
+        {
+            isSolved = false;
+            currentNumber = -1;
+            numberTMP.text = " ";
+
+            DisableNotes();
+        }
+
+        DownlightTile();
+    }
+
     public void SetSkin()
     {
         tileImage.color = SkinController.Instance.CurrentTileSkin.TileIdleColor;

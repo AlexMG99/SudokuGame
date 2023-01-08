@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 public class LevelController : MonoBehaviour
 {
@@ -21,9 +22,18 @@ public class LevelController : MonoBehaviour
 
     [Header("UI elements")]
     [SerializeField] private TextMeshProUGUI levelDifficultyText;
+    public TextMeshProUGUI LevelDifficultyText => levelDifficultyText;
+    public TextMeshProUGUI MistakesText => mistakesText;
     [SerializeField] private TextMeshProUGUI mistakesText;
+    public TextMeshProUGUI ScoreText => scoreText;
     [SerializeField] private TextMeshProUGUI scoreText;
+    public TextMeshProUGUI GameplayTimeText => gameplayTimeText;
     [SerializeField] private TextMeshProUGUI gameplayTimeText;
+
+    [SerializeField]
+    private Image timeImage;
+    [SerializeField]
+    private Image scoreImage;
 
     private int levelScore = 0;
     private int mistakes = 0;
@@ -82,6 +92,8 @@ public class LevelController : MonoBehaviour
         // Score
         scoreText.text = levelScore.ToString();
 
+        SetSkin();
+
     }
 
     #endregion
@@ -121,7 +133,12 @@ public class LevelController : MonoBehaviour
         PlayerPrefs.SetInt("LevelIndex", currentLevelIdx + 1);
 
         LoadLevel();
-        GridController.Instance.ResetLevel();
+        GridController.Instance.SetNextLevel();
+    }
+
+    public void SetSkin()
+    {
+        levelDifficultyText.color = mistakesText.color = scoreText.color = gameplayTimeText.color = timeImage.color = scoreImage.color = SkinController.Instance.CurrentGridSkin.UITextColor;
     }
 
     public void AddMistake()

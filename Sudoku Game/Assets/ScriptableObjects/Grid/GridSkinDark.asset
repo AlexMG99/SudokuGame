@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a4827da1e5c768a4dac1fd6df74b834b, type: 3}
-  m_Name: GridSkinDefault
+  m_Name: GridSkinDark
   m_EditorClassIdentifier: 
-  backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-  gridBorderColor: {r: 0.2627451, g: 0.27058825, b: 0.31764707, a: 1}
-  uiTextColor: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
+  backgroundColor: {r: 0.08235294, g: 0.08627451, b: 0.10588236, a: 1}
+  gridBorderColor: {r: 0.011764707, g: 0.011764707, b: 0.011764707, a: 1}
+  uiTextColor: {r: 0.43921572, g: 0.454902, b: 0.5019608, a: 1}
   uiTextSelectColor: {r: 0.21018584, g: 0.23917702, b: 0.273, a: 1}
   uiTextIdleColor: {r: 0.34117648, g: 0.38823533, b: 0.4431373, a: 1}
   buttonIdleColor: {r: 0.47450984, g: 0.49411768, b: 0.5372549, a: 1}
   buttonHoverColor: {r: 0.2871359, g: 0.29975727, b: 0.325, a: 1}
-  buttonUIColor: {r: 0.27058825, g: 0.40784314, b: 0.7254902, a: 1}
-  themeImageColor: {r: 1, g: 1, b: 1, a: 1}
+  buttonUIColor: {r: 0.4156863, g: 0.56078434, b: 0.76470596, a: 1}
+  themeImageColor: {r: 0.18039216, g: 0.19607845, b: 0.23137257, a: 1}

@@ -34,7 +34,7 @@ public class NotesButton : ClickableImage
         else
         {
             StartCoroutine(ClickEnter());
-            circleInnerImage.color = SkinController.Instance.CurrentGridSkin.ImageColor;
+            circleInnerImage.color = SkinController.Instance.CurrentGridSkin.ButtonUIColor;
             notesText.text = "ON";
         }
 

@@ -7,7 +7,10 @@ using UnityEngine.UI;
 public class Cell : MonoBehaviour
 {
     [Header("Cell Skin Elements")]
-    [SerializeField] private Image gridBorderImage;
+    [SerializeField] private Image gridBorderImageT;
+    [SerializeField] private Image gridBorderImageR;
+    [SerializeField] private Image gridBorderImageL;
+    [SerializeField] private Image gridBorderImageB;
 
     [SerializeField]
     private Transform tileContainer;
@@ -41,7 +44,7 @@ public class Cell : MonoBehaviour
 
     private void SetSkin()
     {
-        gridBorderImage.color = SkinController.Instance.CurrentGridSkin.GridBorderColor;
+        gridBorderImageT.color = gridBorderImageL.color = gridBorderImageR.color = gridBorderImageB.color = SkinController.Instance.CurrentGridSkin.GridBorderColor;
     }
 
     private Tile GetTileByNumber(int number)
@@ -137,6 +140,16 @@ public class Cell : MonoBehaviour
     #endregion
 
     #region PublicFunctions
+    public void ResetCell()
+    {
+        isCellSolved = false;
+
+        foreach (Tile tile in tiles)
+        {
+            tile.ResetTile();
+        }
+    }
+
     public bool FindTileByPosition(Vector2Int position, out Tile tileOut)
     {
         foreach (Tile tile in tiles)

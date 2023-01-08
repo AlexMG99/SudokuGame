@@ -31,7 +31,7 @@ public class NumberSelection : MonoBehaviour
 
     public void SetSkin()
     {
-        numberText.color = SkinController.Instance.CurrentGridSkin.UITextColor;
+        numberText.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
         buttonImage.color = SkinController.Instance.CurrentGridSkin.BackgroundColor;
     }
 

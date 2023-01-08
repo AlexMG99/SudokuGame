@@ -31,7 +31,7 @@ public class HintButton : ClickableImage
     {
         base.SetSkin();
         circleOutlineImage.color = hintCountText.color = SkinController.Instance.CurrentGridSkin.BackgroundColor;
-        circleInnerImage.color = SkinController.Instance.CurrentGridSkin.ImageColor;
+        circleInnerImage.color = SkinController.Instance.CurrentGridSkin.ButtonUIColor;
     }
 
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Audio.AudioSFX;
 
 public class GameManager : MonoBehaviourSingleton<GameManager>
 {
@@ -29,10 +30,25 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     [SerializeField]
     private GameObject pauseScreen;
 
+    [SerializeField]
+    private Image backButtonImage;
+
     public GameStatus GameState => gameState;
     private GameStatus gameState = GameStatus.PLAY;
 
+    #region MonoBehaviourFunction
+    private void Start()
+    {
+        SetSkin();
+    }
+    #endregion
+
     #region PublicFunction
+    public void SetSkin()
+    {
+        pauseButtonImage.color = backButtonImage.color = SkinController.Instance.CurrentGridSkin.ButtonUIColor;
+    }
+
     public void WinGame()
     {
         // UI Win appear
@@ -63,6 +79,8 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
             pauseButtonImage.sprite = pauseIcon;
             pauseScreen.SetActive(false);
         }
+
+        AudioSFX.Instance.PlaySFX("UIButton");
     }
 
     public void ResetLevel()
@@ -81,9 +99,12 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
     public void NextLevel()
     {
+        winScreen.SetActive(false);
+
         gameState = GameStatus.PLAY;
         GridController.Instance.LevelController.LoadNextLevel();
     }
     #endregion
+
 
 }

@@ -33,11 +33,6 @@ MonoBehaviour:
     minRandomPitch: 1
     maxRandomPitch: 1
     intensityFactor: 1
-  - ID: UIButton
-    clip: {fileID: 8300000, guid: 347a44b4b4e9e674297b360eba0b6e91, type: 3}
-    minRandomPitch: 0.2
-    maxRandomPitch: 0.2
-    intensityFactor: 1
   - ID: Good
     clip: {fileID: 8300000, guid: 5ca87e35935177b488123ac87dc5ee5a, type: 3}
     minRandomPitch: 1
@@ -50,6 +45,11 @@ MonoBehaviour:
     intensityFactor: 1
   - ID: Notes
     clip: {fileID: 8300000, guid: c7bd8e82d8de03449ba5ce000f2adb1b, type: 3}
+    minRandomPitch: 1
+    maxRandomPitch: 1
+    intensityFactor: 1
+  - ID: UIButton
+    clip: {fileID: 8300000, guid: 25057d0b65c720241a9813e251ed03a0, type: 3}
     minRandomPitch: 1
     maxRandomPitch: 1
     intensityFactor: 1

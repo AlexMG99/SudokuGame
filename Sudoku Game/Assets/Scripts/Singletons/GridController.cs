@@ -29,12 +29,6 @@ public class GridController : MonoBehaviourSingleton<GridController>
         UpdateSkins();
     }
 
-    private void Update()
-    {
-        //if (Controls.Instance.TouchDown)
-            //DownlightAllCells();
-    }
-
     #endregion
 
     #region PrivateFunctions
@@ -84,6 +78,16 @@ public class GridController : MonoBehaviourSingleton<GridController>
     #region PublicFunctions
     public void ResetLevel()
     {
+        for (int i = 0; i < cells.Count; i++)
+        {
+            cells[i].ResetCell();
+        }
+    }
+
+    public void SetNextLevel()
+    {
+        ResetLevel();
+
         SetGridLevel();
         UpdateSkins();
     }
