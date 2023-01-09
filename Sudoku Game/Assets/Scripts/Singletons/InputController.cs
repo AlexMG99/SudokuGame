@@ -157,7 +157,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
                     actionTile.SetNumber(lastAction.value, false);
                     break;
                 case ActionType.AddValueWrong:
-                    actionTile.RemoveNumber(Tile.TileStatus.UNSELECTED);
+                    actionTile.RemoveNumber(false);
                     break;
                 case ActionType.RemoveValueWrong:
                     actionTile.SetNumber(lastAction.value, true);

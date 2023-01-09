@@ -220,10 +220,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         isSolved = true;
 
         if (IsWrong())
-        {
-            tileStatus = TileStatus.UNSELECTED;
-            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
-        }
+            isWrong = false;
+
+        numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
 
         GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
         HighlightSelectedTile();
@@ -283,7 +282,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         numberTMP.text = " ";
 
         if (IsWrong())
-            tileStatus = TileStatus.UNSELECTED;
+            isWrong = false;
+
+        if (isSolved)
+            isSolved = false;
 
         // Refresh selected Tiles
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
@@ -292,7 +294,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return true;
     }
 
-    public bool RemoveNumber(TileStatus newStatus)
+    public bool RemoveNumber(bool isWrong)
     {
         if (IsSolved())
             return false;
@@ -305,7 +307,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
         HighlightSelectedTile();
 
-        tileStatus = newStatus;
+        this.isWrong = isWrong;
 
         if (IsWrong())
             HighlightWrongTile();
