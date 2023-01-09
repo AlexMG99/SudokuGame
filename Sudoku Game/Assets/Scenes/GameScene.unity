@@ -15987,7 +15987,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels: []
-  testLevel: {fileID: 11400000, guid: 88f8b8b9e4b284c47b805369a02cf82e, type: 2}
+  testLevel: {fileID: 11400000, guid: 5e42ea6aedff4054da52e6fbd94853b0, type: 2}
   isTestLevel: 1
   levelDifficultyText: {fileID: 34884902}
   mistakesText: {fileID: 2108344195}
@@ -16206,7 +16206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c50a7b9edd1116d4d9a5d71c5723e71d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newLevel: {fileID: 11400000, guid: 8a59270bc6c0f054aa0e8b442b13f3f5, type: 2}
+  newLevel: {fileID: 11400000, guid: 5e42ea6aedff4054da52e6fbd94853b0, type: 2}
   generateLevel: 0
 --- !u!4 &1216045334
 Transform:

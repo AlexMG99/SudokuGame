@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 [ExecuteInEditMode]
 public class LevelGenerator : MonoBehaviour
@@ -13,6 +14,16 @@ public class LevelGenerator : MonoBehaviour
 
     // Generation values
     int[,] levelMatrix = new int[9,9];
+    Square[] Sudoku = new Square[81];
+
+    public struct Square
+    {
+        public int Across;
+        public int Down;
+        public int Region;
+        public int Value;
+        public int Index;
+    }
 
 #if UNITY_EDITOR
     private void Update()
@@ -28,174 +39,169 @@ public class LevelGenerator : MonoBehaviour
     {
         Debug.Log("Start sudoku level generator!");
 
-        // Fill grid with 0
-        FillGridWithZeros();
-
-        // Fill diagonal
-        //FillDiagonal();
-
-        Debug.Log("Grid");
-        // Fill remaining
-        FillRemaining(0, 0);
+        GenerateGrid();
 
         PrintSudokuLevel();
 
         Debug.Log("Finished level generation!");
     }
 
-    private void FillGridWithZeros()
+    private void GenerateGrid()
     {
-        for (int x = 0; x < 9; x++)
+        Clear();
+        Square[] Squares = new Square[81]; // an arraylist of squares: see line 86
+        List<int>[] Available = new List<int>[81]; // an arraylist of generic lists (nested lists)
+                                                   // we use this to keep track of what numbers we can still use in what squares
+        int c = 0; // use this to count the square we are up to
+
+        for (int x = 0; x <= Available.Length - 1; x++)
         {
-            for (int y = 0; y < 9; y++)
-            {
-                levelMatrix[x, y] = 0;
-            }
+            Available[x] = new List<int>();
+            for (int i = 1; i <= 9; i++)
+                Available[x].Add(i);
         }
-    }
 
-    private void FillDiagonal()
-    {
-        for (int cellNum = 0; cellNum < 3; cellNum++)
+        while (c != 81) // we want to fill every square object with values
         {
-            FillBox(cellNum, cellNum);
-        }
-    }
-
-    int counter = 0;
-    private bool FillRemaining(int row, int col)
-    {
-        counter++;
-        if (counter > 20000000)
-            return false;
-
-
-        if (row < 9 && col < 9)
-        {
-            if (levelMatrix[row, col] != 0)
+            if (Available[c].Count != 0)
             {
-                
-                if ((col + 1) < 9) return FillRemaining(row, col + 1); // If there still next column, go to next col in same row
-                else if ((row + 1) < 9) return FillRemaining(row + 1, 0); // If there still next row, go to next row and start in column 0
-                else return true;
+                // and failed then backtrack
+                int i = GetRan(0, Available[c].Count - 1);
+                int z = Available[c][i];
+
+                if (Conflicts(Squares, Item(c, z)) == false)
+                {
+                    // proposed number
+                    Squares[c] = Item(c, z);    // this number works so we add it to the 
+                                                // list of numbers
+                    Available[c].RemoveAt(i); // we also remove it from its individual list
+                    c += 1; // move to the next number
+                }
+                else
+                    Available[c].RemoveAt(i);// this number conflicts so we remove it 
             }
             else
             {
-                List<int> availableNumbers = GetAvailableNumbers(row, col);
-                if (availableNumbers.Count > 0)
-                {
-                    levelMatrix[row, col] = availableNumbers[Random.Range(0, availableNumbers.Count)];
-                    Debug.Log($"Position [{row}][{col}]: {levelMatrix[row, col]}");
-
-                }
-
-                if ((col + 1) < 9)
-                {
-                    //Debug.Log($"Position [{row}][{col}]: {levelMatrix[row, col]}");
-                    return FillRemaining(row, col + 1);
-                }
-                else if ((row + 1) < 9)
-                {
-                    //Debug.Log($"Position [{row}][{col}]: {levelMatrix[row, col]}");
-                    return FillRemaining(row + 1, 0);
-                }
-                else return true;
+                for (int y = 1; y <= 9; y++) // forget anything about the current square
+                    Available[c].Add(y);// by resetting its available numbers
+                Squares[c - 1] = new Square();/* TODO Change to default(_) if this is not a reference type */; // go back and retry a different number 
+                c -= 1; // in the previous square
             }
         }
-        else return true;
+
+        // this produces the output list of squares
+        for (int j = 0; j <= 80; j++)
+        {
+            Sudoku[j] = Squares[j];
+            //Debug.Log($"Square: Index: {j} Value: {Squares[j].Value} SquareIndex: {Squares[j].Index} Row: {Squares[j].Down} Column: {Squares[j].Across} Cell: {Squares[j].Region}");
+        }
     }
 
-    // Fill cell of 3x3
-    private void FillBox(int row, int column)
+    private Square Item(int n, int v)
     {
-        int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        List<int> availableNumbers = new List<int>(numbers);
-        for (int x = 0; x < 3; x++)
-        {
-            for (int y = 0; y < 3; y++)
-            {
-                int number = GetRandomNumberInList(availableNumbers);
-                levelMatrix[row + x, column + y] = number;
-                availableNumbers.Remove(number);
+        Square newSquare = new Square();
+        n += 1;
+        newSquare.Across = GetAcrossFromNumber(n);
+        newSquare.Down = GetDownFromNumber(n);
+        newSquare.Region = GetRegionFromNumber(n);
+        newSquare.Value = v;
+        newSquare.Index = n - 1;
 
-                //Debug.Log($"Position [{row + x}][{column + y}]: {number}");
+        return newSquare;
+    }
+
+    private int GetAcrossFromNumber(int n)
+    {
+        int k = n % 9;
+        if (k == 0)
+            return 9;
+        else
+            return k;
+    }
+
+    private int GetDownFromNumber(int n)
+    {
+        int k = 0;
+        if (GetAcrossFromNumber(n) == 9)
+            k = n / 9;
+        else
+            k = n / 9 + 1;
+        return k;
+    }
+
+    private int GetRegionFromNumber(int n)
+    {
+        int k = 0;
+        int a = GetAcrossFromNumber(n);
+        int d = GetDownFromNumber(n);
+
+        if (1 <= a & a < 4 & 1 <= d & d < 4)
+            k = 1;
+        else if (4 <= a & a < 7 & 1 <= d & d < 4)
+            k = 2;
+        else if (7 <= a & a < 10 & 1 <= d & d < 4)
+            k = 3;
+        else if (1 <= a & a < 4 & 4 <= d & d < 7)
+            k = 4;
+        else if (4 <= a & a < 7 & 4 <= d & d < 7)
+            k = 5;
+        else if (7 <= a & a < 10 & 4 <= d & d < 7)
+            k = 6;
+        else if (1 <= a & a < 4 & 7 <= d & d < 10)
+            k = 7;
+        else if (4 <= a & a < 7 & 7 <= d & d < 10)
+            k = 8;
+        else if (7 <= a & a < 10 & 7 <= d & d < 10)
+            k = 9;
+        return k;
+    }
+
+    public void Clear()
+    {
+        Array.Clear(Sudoku, 0, Sudoku.Length);
+    }
+
+    private int GetRan(int lower, int upper)
+    {
+        return UnityEngine.Random.Range(lower, upper - 1);
+    }
+
+    private bool Conflicts(Square[] CurrentValues, Square test)
+    {
+        foreach (Square s in CurrentValues)
+        {
+            if ((s.Across != 0 & s.Across == test.Across) || (s.Down != 0 & s.Down == test.Down) || (s.Region != 0 & s.Region == test.Region))
+            {
+                if (s.Value == test.Value)
+                    return true;
             }
         }
+
+        return false;
     }
 
     private void PrintSudokuLevel()
     {
         string rowString = "";
+        int row = 0;
 
-        for (int x = 0; x < 9; x++)
+        for (int i = 0; i < Sudoku.Length; i++)
         {
-            for (int y = 0; y < 9; y++)
+            Debug.Log($"Square: Index: {i} Value: {Sudoku[i].Value} SquareIndex: {Sudoku[i].Index} RowString: {row} Row: {Sudoku[i].Down} Column: {Sudoku[i].Across} Cell: {Sudoku[i].Region}");
+
+            rowString += Sudoku[i].Value.ToString();
+
+            if ((i + 1) % 9 == 0 && i != 0)
             {
-                rowString += levelMatrix[x, y].ToString();
-            }
+                newLevel.NumberSolution[row] = rowString;
+                Debug.Log($"Row {row}: {rowString}");
+                rowString = "";
 
-            newLevel.NumberSolution[x] = rowString;
-            Debug.Log($"Row {x}: {rowString}");
-            rowString = "";
-        }
-    }
-
-    private bool IsAvailable(int row, int col, int num)
-    {
-        for (int i = 0; i < 9; ++i)
-        {
-            if (levelMatrix[row, i] == num) return false;
-            if (levelMatrix[i, col] == num) return false;
-        }
-
-        int rowStart = (row / 3) * 3;
-        int colStart = (col / 3) * 3;
-
-        for (int x = 0; x < 3; x++)
-        {
-            for (int y = 0; y < 3; y++)
-            {
-                if (levelMatrix[rowStart + x, colStart + y] == num) return false;
+                row++;
             }
         }
-
-        return true;
     }
 
-    private List<int> GetAvailableNumbers(int row, int col)
-    {
-        int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        List<int> availableNumbers = new List<int>(numbers);
-
-        for (int i = 0; i < 9; ++i)
-        {
-            if (availableNumbers.Contains(levelMatrix[row, i]))
-                availableNumbers.Remove(levelMatrix[row, i]);
-            if (availableNumbers.Contains(levelMatrix[i, col]))
-                availableNumbers.Remove(levelMatrix[i, col]);
-        }
-
-        int rowStart = (row / 3) * 3;
-        int colStart = (col / 3) * 3;
-
-        for (int x = 0; x < 3; x++)
-        {
-            for (int y = 0; y < 3; y++)
-            {
-                if (availableNumbers.Contains(levelMatrix[rowStart + x, colStart + y]))
-                    availableNumbers.Remove(levelMatrix[rowStart + x, colStart + y]);
-            }
-        }
-
-        return availableNumbers;
-    }
-
-    // Gives a random element from a given list
-    private int GetRandomNumberInList(List<int> list)
-    {
-        int idx = Random.Range(0, list.Count);
-        return list[idx];
-    }
 #endif
 }
 

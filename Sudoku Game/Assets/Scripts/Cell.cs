@@ -61,7 +61,7 @@ public class Cell : MonoBehaviour
         }
 
         if (!numberTile)
-            Debug.LogError($"There is no tile with number {number}!");
+            Debug.LogWarning($"There is no tile with number {number}!");
         else if (!numberTile.IsSolved())
             return null;
 

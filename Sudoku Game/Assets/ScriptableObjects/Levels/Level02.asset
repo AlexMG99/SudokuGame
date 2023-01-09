@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d763ae1f6cdbbc4a9c68ade413bdd88, type: 3}
+  m_Name: Level02
+  m_EditorClassIdentifier: 
+  numberSolution:
+  - 635724189
+  - 174689532
+  - 289351476
+  - 712546398
+  - 453298761
+  - 896137254
+  - 361872945
+  - 548913627
+  - 927465813
+  numberHide:
+  - -3-7-4-8-
+  - 1----9---
+  - --------6
+  - -------98
+  - 45-------
+  - -96--7--4
+  - 3---7----
+  - -----36--
+  - -2-----1-
+  levelDifficulty: 2
+  maxMisatkes: 3
