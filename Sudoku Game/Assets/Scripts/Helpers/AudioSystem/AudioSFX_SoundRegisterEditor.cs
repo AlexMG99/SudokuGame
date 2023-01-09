@@ -9,9 +9,6 @@ namespace Audio.AudioSFX
     [CustomPropertyDrawer(typeof(AudioSFX_SFX))]
     public class AudioSFX_SoundRegisterEditor : PropertyDrawer
     {
-        private float _height = 100;
-        private float _indent = 50;
-
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             int totalLine = 1;

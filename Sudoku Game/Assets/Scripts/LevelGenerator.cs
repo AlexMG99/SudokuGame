@@ -32,10 +32,11 @@ public class LevelGenerator : MonoBehaviour
         FillGridWithZeros();
 
         // Fill diagonal
-        FillDiagonal();
+        //FillDiagonal();
 
+        Debug.Log("Grid");
         // Fill remaining
-        FillRemaining(0, 3);
+        FillRemaining(0, 0);
 
         PrintSudokuLevel();
 
@@ -61,41 +62,45 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    int counter = 0;
     private bool FillRemaining(int row, int col)
     {
-        Debug.Log($"Position [{row}][{col}]: {levelMatrix[row, col]}");
+        counter++;
+        if (counter > 20000000)
+            return false;
+
+
         if (row < 9 && col < 9)
         {
             if (levelMatrix[row, col] != 0)
             {
-                if ((col + 1) < 9) return FillRemaining(row, col + 1);
-                else if ((row + 1) < 9) return FillRemaining(row + 1, 0);
+                
+                if ((col + 1) < 9) return FillRemaining(row, col + 1); // If there still next column, go to next col in same row
+                else if ((row + 1) < 9) return FillRemaining(row + 1, 0); // If there still next row, go to next row and start in column 0
                 else return true;
             }
             else
             {
-                for (int i = 0; i < 9; ++i)
+                List<int> availableNumbers = GetAvailableNumbers(row, col);
+                if (availableNumbers.Count > 0)
                 {
-                    if (IsAvailable(row, col, i + 1))
-                    {
-                        levelMatrix[row, col] = i + 1;
+                    levelMatrix[row, col] = availableNumbers[Random.Range(0, availableNumbers.Count)];
+                    Debug.Log($"Position [{row}][{col}]: {levelMatrix[row, col]}");
 
-                        if ((col + 1) < 9)
-                        {
-                            if (FillRemaining(row, col + 1)) return true;
-                            else levelMatrix[row, col] = 0;
-                        }
-                        else if ((row + 1) < 9)
-                        {
-                            if (FillRemaining(row + 1, 0)) return true;
-                            else levelMatrix[row, col] = 0;
-                        }
-                        else return true;
-                    }
                 }
-            }
 
-            return false;
+                if ((col + 1) < 9)
+                {
+                    //Debug.Log($"Position [{row}][{col}]: {levelMatrix[row, col]}");
+                    return FillRemaining(row, col + 1);
+                }
+                else if ((row + 1) < 9)
+                {
+                    //Debug.Log($"Position [{row}][{col}]: {levelMatrix[row, col]}");
+                    return FillRemaining(row + 1, 0);
+                }
+                else return true;
+            }
         }
         else return true;
     }
@@ -105,7 +110,6 @@ public class LevelGenerator : MonoBehaviour
     {
         int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         List<int> availableNumbers = new List<int>(numbers);
-
         for (int x = 0; x < 3; x++)
         {
             for (int y = 0; y < 3; y++)
@@ -113,6 +117,8 @@ public class LevelGenerator : MonoBehaviour
                 int number = GetRandomNumberInList(availableNumbers);
                 levelMatrix[row + x, column + y] = number;
                 availableNumbers.Remove(number);
+
+                //Debug.Log($"Position [{row + x}][{column + y}]: {number}");
             }
         }
     }
