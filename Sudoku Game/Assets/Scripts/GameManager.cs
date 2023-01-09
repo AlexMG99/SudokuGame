@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Audio.AudioSFX;
+using Helper.Actions;
+using static SudokuLevelSO;
 
 public class GameManager : MonoBehaviourSingleton<GameManager>
 {
@@ -19,6 +21,8 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     private GameObject winScreen;
     [SerializeField]
     private GameObject loseScreen;
+    [SerializeField]
+    private GameObject newLevelScreen;
 
     [Header("Pause UI")]
     [SerializeField]
@@ -94,15 +98,40 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         loseScreen.SetActive(false);
 
         gameState = GameStatus.PLAY;
-        GridController.Instance.LevelController.ResetLevel();
+        GridController.Instance.LevelController.ResetSameLevel();
     }
 
-    public void NextLevel()
+    private bool isNextLevelRandom = false;
+    public void OpenNewLevelScreen(bool isRandom)
     {
         winScreen.SetActive(false);
+        loseScreen.SetActive(false);
+
+        newLevelScreen.SetActive(true);
+
+        isNextLevelRandom = isRandom;
+    }
+
+    public void NextLevel(string levelDifficultyString)
+    {
+        LevelDifficult levelDifficulty = LevelDifficult.EASY;
+        if (levelDifficultyString == "Easy")
+            levelDifficulty = LevelDifficult.EASY;
+        else if (levelDifficultyString == "Medium")
+            levelDifficulty = LevelDifficult.MEDIUM;
+        else if (levelDifficultyString == "Hard")
+            levelDifficulty = LevelDifficult.HARD;
+        else
+            Debug.LogWarning("No diffculty in level selected in NewScreenSelect");
 
         gameState = GameStatus.PLAY;
-        GridController.Instance.LevelController.LoadNextLevel();
+
+        if(isNextLevelRandom)
+            GridController.Instance.LevelController.LoadNextLevelRandom(levelDifficulty);
+        else
+            GridController.Instance.LevelController.LoadNextLevel(levelDifficulty);
+
+        newLevelScreen.SetActive(false);
     }
     #endregion
 

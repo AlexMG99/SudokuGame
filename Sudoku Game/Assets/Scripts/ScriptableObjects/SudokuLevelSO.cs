@@ -29,6 +29,13 @@ public class SudokuLevelSO : ScriptableObject
     }
 
     #region PublicFunctions
+    public void SetLevelDifficulty(LevelDifficult newDifficulty)
+    {
+        levelDifficulty = newDifficulty;
+
+        HideNumbersByDifficulty();
+    }
+
     public void HideNumbersByDifficulty()
     {
         numberHide = (string[]) numberSolution.Clone();
@@ -48,33 +55,6 @@ public class SudokuLevelSO : ScriptableObject
             default:
                 break;
         }
-    }
-
-    private void RemoveDigits(int digits)
-    {
-        int remainingDigits = digits;
-        int maxTries = 200;
-        int tries = 0;
-
-        while(remainingDigits > 0 && tries < maxTries)
-        {
-            int randX = Random.Range(0, 9);
-            int randY = Random.Range(0, 9);
-
-            if (GetNumberByPosition(randX, randY) != '-')
-            {
-                char character = numberHide[randX][randY];
-                numberHide[randX] = numberHide[randX].Replace(character, '-');
-                remainingDigits--;
-            }
-            else
-                tries++;
-        }
-    }
-
-    private char GetNumberByPosition(int i, int j)
-    {
-        return numberHide[i][j];
     }
 
     public bool CheckIfLevelValid()
@@ -100,6 +80,35 @@ public class SudokuLevelSO : ScriptableObject
         }
 
         return true;
+    }
+    #endregion
+
+    #region PrivateFunctions
+    private void RemoveDigits(int digits)
+    {
+        int remainingDigits = digits;
+        int maxTries = 200;
+        int tries = 0;
+
+        while(remainingDigits > 0 && tries < maxTries)
+        {
+            int randX = Random.Range(0, 9);
+            int randY = Random.Range(0, 9);
+
+            if (GetNumberByPosition(randX, randY) != '-')
+            {
+                char character = numberHide[randX][randY];
+                numberHide[randX] = numberHide[randX].Replace(character, '-');
+                remainingDigits--;
+            }
+            else
+                tries++;
+        }
+    }
+
+    private char GetNumberByPosition(int i, int j)
+    {
+        return numberHide[i][j];
     }
     #endregion
 }

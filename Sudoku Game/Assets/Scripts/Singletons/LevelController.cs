@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using UnityEngine.UI;
+using static SudokuLevelSO;
 
 public class LevelController : MonoBehaviour
 {
@@ -66,7 +67,24 @@ public class LevelController : MonoBehaviour
     #region PrivateFunctions
     private void Init()
     {
-        // Level Text
+        // UI setting
+        SetUI();
+
+        SetSkin();
+
+    }
+
+    private void SetUI()
+    {
+        timeElapsed = 0f;
+
+        levelScore = 0;
+        scoreText.text = levelScore.ToString();
+
+        mistakes = 0;
+        maxMistakes = currentLevel.MaxMistakes;
+        mistakesText.text = mistakesText.text = $"Mistakes {mistakes}/{maxMistakes}";
+
         string levelDifficultyString = "None";
         switch (currentLevel.LevelDifficulty)
         {
@@ -84,16 +102,6 @@ public class LevelController : MonoBehaviour
         }
 
         levelDifficultyText.text = levelDifficultyString;
-
-        // Mistakes
-        maxMistakes = currentLevel.MaxMistakes;
-        mistakesText.text = $"Mistakes {mistakes}/{maxMistakes}";
-
-        // Score
-        scoreText.text = levelScore.ToString();
-
-        SetSkin();
-
     }
 
     #endregion
@@ -113,27 +121,57 @@ public class LevelController : MonoBehaviour
             Debug.LogError("Level No Valid!");
     }
 
+    public void LoadLevelRandom()
+    {
+        currentLevel = LevelGeneratorRandom.Instance.GenerateNewLevel();
+
+        if (!currentLevel.CheckIfLevelValid())
+            Debug.LogError("Level No Valid!");
+    }
+
     public void ResetLevel()
     {
         // Set level values to 0
-        timeElapsed = 0f;
-
-        levelScore = 0;
-        scoreText.text = levelScore.ToString();
-
-        mistakes = 0;
-        mistakesText.text = mistakesText.text = $"Mistakes {mistakes}/{maxMistakes}";
-
         GridController.Instance.ResetLevel();
         InputController.Instance.ClearQueue();
     }
 
-    public void LoadNextLevel()
+    public void ResetSameLevel()
     {
-        PlayerPrefs.SetInt("LevelIndex", currentLevelIdx + 1);
+        ResetLevel();
+        SetUI();
+    }
+
+    public void LoadNextLevel(LevelDifficult levelDifficulty)
+    {
+        ResetLevel();
+
+        int nextLevelIdx = currentLevelIdx + 1;
+        if (nextLevelIdx > levels.Count - 1)
+            currentLevelIdx = 0;
+        else
+            currentLevelIdx = nextLevelIdx;
+
+        PlayerPrefs.SetInt("LevelIndex", currentLevelIdx);
 
         LoadLevel();
+        currentLevel.SetLevelDifficulty(levelDifficulty);
+
         GridController.Instance.SetNextLevel();
+
+        SetUI();
+    }
+
+    public void LoadNextLevelRandom(LevelDifficult levelDifficulty)
+    {
+        ResetLevel();
+
+        currentLevel.SetLevelDifficulty(levelDifficulty);
+        LoadLevelRandom();
+        
+        GridController.Instance.SetNextLevel();
+
+        SetUI();
     }
 
     public void SetSkin()

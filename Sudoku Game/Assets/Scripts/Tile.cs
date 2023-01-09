@@ -139,6 +139,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         tileStatus = TileStatus.UNSELECTED;
 
+        isWrong = false;
+
         if (!isLocked)
         {
             isSolved = false;

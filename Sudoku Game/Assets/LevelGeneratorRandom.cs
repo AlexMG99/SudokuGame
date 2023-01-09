@@ -1,51 +1,28 @@
-using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
+using static LevelGenerator;
 
-[ExecuteInEditMode]
-public class LevelGenerator : MonoBehaviour
+public class LevelGeneratorRandom : MonoBehaviourSingleton<LevelGeneratorRandom>
 {
-    [SerializeField]
-    private SudokuLevelSO newLevel;
-
-    [SerializeField]
-    private bool generateLevel = false;
-
     // Generation values
     Square[] Sudoku = new Square[81];
+    SudokuLevelSO newRandomLevel;
 
-    public struct Square
+    public SudokuLevelSO GenerateNewLevel()
     {
-        public int Across;
-        public int Down;
-        public int Region;
-        public int Value;
-        public int Index;
-    }
-
-#if UNITY_EDITOR
-    private void Update()
-    {
-        if(generateLevel)
-        {
-            GenerateNewLevel();
-            generateLevel = false;
-        }
-    }
-
-    private void GenerateNewLevel()
-    {
-        if (!newLevel)
-            Debug.LogError("There is no Level Attach to Level Generator!");
-
         Debug.Log("Start sudoku level generator!");
+
+        newRandomLevel = new SudokuLevelSO();
 
         GenerateGrid();
 
         PrintSudokuLevel();
 
         Debug.Log("Finished level generation!");
+
+        return newRandomLevel;
     }
 
     private void GenerateGrid()
@@ -195,7 +172,7 @@ public class LevelGenerator : MonoBehaviour
 
             if ((i + 1) % 9 == 0 && i != 0)
             {
-                newLevel.NumberSolution[row] = rowString;
+                newRandomLevel.NumberSolution[row] = rowString;
                 Debug.Log($"Row {row}: {rowString}");
                 rowString = "";
 
@@ -203,9 +180,6 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
-        newLevel.HideNumbersByDifficulty();
+        newRandomLevel.HideNumbersByDifficulty();
     }
-
-#endif
 }
-

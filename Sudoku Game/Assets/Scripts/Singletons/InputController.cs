@@ -197,6 +197,8 @@ public class InputController : MonoBehaviourSingleton<InputController>
 
     public void ClearQueue()
     {
+        selectedTile = null;
+
         actionQueue.Clear();
     }
 

@@ -45,6 +45,9 @@ public class NotesButton : ClickableImage
     {
         base.SetSkin();
         circleOutlineImage.color = notesText.color = SkinController.Instance.CurrentGridSkin.BackgroundColor;
-        circleInnerImage.color = SkinController.Instance.CurrentGridSkin.ButtonIdleColor;
+        if(!isSelected)
+            circleInnerImage.color = SkinController.Instance.CurrentGridSkin.ButtonIdleColor;
+        else
+            circleInnerImage.color = SkinController.Instance.CurrentGridSkin.ButtonUIColor;
     }
 }
