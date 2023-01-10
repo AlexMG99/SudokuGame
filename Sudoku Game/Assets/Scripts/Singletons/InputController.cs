@@ -13,6 +13,9 @@ public class InputController : MonoBehaviourSingleton<InputController>
     [SerializeField]
     private List<Action<int>> actionQueue = new List<Action<int>>();
 
+    [SerializeField]
+    private List<NumberSelection> numberSelections = new List<NumberSelection>();
+
     private Tile selectedTile;
 
     private bool isNotesMode = false;
@@ -48,7 +51,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
 
         // Add removed number to actionQueue
         bool valueChanged = false;
-        if (!selectedTile.IsSolved())
+        if (!selectedTile.IsLocked())
         {
             if(selectedTile.IsWrong())
                 actionQueue.Add(new Action<int>(ActionType.RemoveValueWrong, selectedTile.CurrentNumber, selectedTile.Position));
@@ -188,6 +191,11 @@ public class InputController : MonoBehaviourSingleton<InputController>
             AudioSFX.Instance.PlaySFX("Wrong");
             Debug.Log("The queue is empty, there is no more elements in list!");
         }
+    }
+
+    public void ChangeNumberSelectionState(int deactivateNumber, bool state)
+    {
+        numberSelections[deactivateNumber].ChangeNumberState(state);
     }
 
     public void AddActionToQueue(Action<int> newAction)

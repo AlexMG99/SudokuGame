@@ -68,22 +68,6 @@ public class Cell : MonoBehaviour
         return numberTile;
     }
 
-    private Tile GetTileByCurrentNumber(int number)
-    {
-        Tile numberTile = null;
-
-        foreach (Tile tile in tiles)
-        {
-            if (tile.CheckCurrentNumber(number))
-            {
-                numberTile = tile;
-                break;
-            }
-        }
-
-        return numberTile;
-    }
-
     private bool CellIsInRow(int row)
     {
         if (row < 3)
@@ -137,6 +121,15 @@ public class Cell : MonoBehaviour
             tile.HighlightTile();
         }
     }
+
+    private void CellCompleteAnimation()
+    {
+        float delayTile = 0.1f;
+        for(int i = 0; i < tiles.Count; i++)
+        {
+            StartCoroutine(tiles[i].TileCompleteAnimation(delayTile * i, 0.5f));
+        }
+    }
     #endregion
 
     #region PublicFunctions
@@ -176,12 +169,20 @@ public class Cell : MonoBehaviour
 
     public void SetTilesNumbers(string solutionNumbers, string lockedNumbers, int _cellIdx)
     {
+        float delayTile = 0.025f;
         cellIdx = _cellIdx;
         for (int i = 0; i < tiles.Count; i++)
         {
             Vector2Int tilePosition = new Vector2Int(Mathf.FloorToInt(i/3) + Mathf.FloorToInt(cellIdx/3) * 3
                 ,i + 3 * (cellIdx - Mathf.FloorToInt(i / 3) - Mathf.FloorToInt(cellIdx / 3) * 3));
             tiles[i].SetNumber(solutionNumbers[i], lockedNumbers[i], tilePosition);
+
+            int idx = Mathf.FloorToInt(_cellIdx / 3) * 27 + // On Cell row change, should start on 27 * row
+                Mathf.FloorToInt(_cellIdx % 3) * 3 + 
+                Mathf.FloorToInt(i / 3) * 9 + // Change row on same cell when finish rows on cell
+                i - Mathf.FloorToInt((i / 3)) * 3; // Set Value to 0 when changes row and add 0, 1, 2
+
+            StartCoroutine(tiles[i].SpawnTileAnimation(idx * delayTile, 0.75f));
         }
     }
 
@@ -200,8 +201,16 @@ public class Cell : MonoBehaviour
         cellScore = 0;
         isCellSolved = true;
 
-        if(isNewNumber)
+        // Win animation tiles of cell
+        CellCompleteAnimation();
+
+        if (isNewNumber)
             GridController.Instance.CheckIfGameIsWin();
+    }
+
+    public bool CheckNumberSolvedInCell(int number)
+    {
+        return (GetTileByNumber(number) != null);
     }
 
     public bool IsCellSolved()

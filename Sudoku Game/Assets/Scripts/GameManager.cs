@@ -98,7 +98,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         loseScreen.SetActive(false);
 
         gameState = GameStatus.PLAY;
-        GridController.Instance.LevelController.ResetSameLevel();
+        GridController.Instance.ResetSameLevel();
     }
 
     private bool isNextLevelRandom = false;

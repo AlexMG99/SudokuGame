@@ -136,12 +136,6 @@ public class LevelController : MonoBehaviour
         InputController.Instance.ClearQueue();
     }
 
-    public void ResetSameLevel()
-    {
-        ResetLevel();
-        SetUI();
-    }
-
     public void LoadNextLevel(LevelDifficult levelDifficulty)
     {
         ResetLevel();
@@ -198,6 +192,12 @@ public class LevelController : MonoBehaviour
 
         levelScore += score;
         scoreText.text = levelScore.ToString();
+    }
+
+    public void SetMistakes(int value)
+    {
+        mistakes = 0;
+        mistakesText.text = $"Mistakes {mistakes}/{maxMistakes}";
     }
     #endregion
 }

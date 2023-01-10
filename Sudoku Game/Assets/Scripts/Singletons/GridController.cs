@@ -83,6 +83,12 @@ public class GridController : MonoBehaviourSingleton<GridController>
             cells[i].ResetCell();
         }
     }
+    
+    public void ResetSameLevel()
+    {
+        LevelController.SetMistakes(0);
+        DownlightAllCells();
+    }
 
     public void SetNextLevel()
     {
@@ -103,6 +109,17 @@ public class GridController : MonoBehaviourSingleton<GridController>
         GameManager.Instance.WinGame();
     }
 
+    public bool CheckNumberSolvedInAllCells(int number)
+    {
+        foreach (Cell cell in cells)
+        {
+            if (!cell.CheckNumberSolvedInCell(number))
+                return false;
+        }
+
+        return true;
+    }
+
     public Tile FindTileByPosition(Vector2Int position)
     {
         Tile tileInPosition = null;
@@ -113,7 +130,7 @@ public class GridController : MonoBehaviourSingleton<GridController>
                 return tileInPosition;
         }
 
-        return null;
+        return tileInPosition;
     }
 
     public Action<int> UseHintOnCell()

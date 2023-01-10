@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using Helper.Actions;
 using Audio.AudioSFX;
+using System.Collections;
 
 public class Tile : MonoBehaviour, IPointerClickHandler 
 {
@@ -33,6 +34,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private bool isLocked = false;
     private bool isSolved = false;
     private bool isWrong = false;
+    private bool isSpawning = false;
     private TileStatus tileStatus = TileStatus.UNSELECTED;
 
     public enum TileStatus
@@ -77,7 +79,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.GameState != GameManager.GameStatus.PLAY)
             return;
 
-        if (IsSolved())
+        if (isLocked)
         {
             // Highlight same number in other cells
             GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
@@ -135,6 +137,64 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     #region PublicFunctions
 
+    public IEnumerator SpawnTileAnimation(float delay, float animTime)
+    {
+        isSpawning = true;
+        if (isLocked)
+        {
+            Color transparentColor = SkinController.Instance.CurrentTileSkin.NumberLockColor;
+            transparentColor.a = 0f;
+            numberTMP.color = transparentColor;
+
+            yield return new WaitForSeconds(delay);
+
+            Timer timer = new Timer();
+            timer.StartTimer(animTime);
+            
+            float speed = 1f / animTime;
+            float status = 0f;
+            
+            while (!timer.CheckTime())
+            {
+                status += speed * Time.deltaTime;
+                numberTMP.color = Color.Lerp(transparentColor, SkinController.Instance.CurrentTileSkin.NumberLockColor, status);
+                yield return null;
+            }
+        }
+
+        isSpawning = false;
+        yield return null;
+    }
+
+    public IEnumerator TileCompleteAnimation(float delay, float animTime)
+    {
+        tileImage.color = SkinController.Instance.CurrentTileSkin.TileHoverColor;
+
+        yield return new WaitForSeconds(delay);
+
+        Timer timer = new Timer();
+        timer.StartTimer(animTime);
+
+        float speed = 1f / animTime;
+        float status = 0f;
+        while (!timer.CheckTime())
+        {
+            status += speed * Time.deltaTime;
+            tileImage.color = Color.Lerp(SkinController.Instance.CurrentTileSkin.TileHoverColor, SkinController.Instance.CurrentTileSkin.TileIdleColor, status);
+            yield return null;
+        }
+
+        timer.StartTimer(animTime);
+        status = 0f;
+        while (!timer.CheckTime())
+        {
+            status += speed * Time.deltaTime;
+            tileImage.color = Color.Lerp(SkinController.Instance.CurrentTileSkin.TileIdleColor, SkinController.Instance.CurrentTileSkin.TileHoverColor, status);
+            yield return null;
+        }
+
+    }
+
     public void ResetTile()
     {
         tileStatus = TileStatus.UNSELECTED;
@@ -175,15 +235,18 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         borderImage.color = SkinController.Instance.CurrentTileSkin.TileBorderColor;
 
-        if (isLocked)
-            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberLockColor;
-        else if (IsWrong())
+        if (!isSpawning)
         {
-            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberWrongColor;
-            tileImage.color = SkinController.Instance.CurrentTileSkin.TileWrongColor;
+            if (isLocked)
+                numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberLockColor;
+            else if (IsWrong())
+            {
+                numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberWrongColor;
+                tileImage.color = SkinController.Instance.CurrentTileSkin.TileWrongColor;
+            }
+            else
+                numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
         }
-        else
-            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
 
         foreach (TextMeshProUGUI textNotes in notes)
         {
@@ -256,6 +319,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
             AudioSFX.Instance.PlaySFX("Good");
 
+            if (GridController.Instance.CheckNumberSolvedInAllCells(InputController.Instance.SelectedNumber))
+                InputController.Instance.ChangeNumberSelectionState(InputController.Instance.SelectedNumber - 1, false);
+
             return true;
         }
         else
@@ -279,15 +345,15 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (isLocked)
             return false;
 
+        if (isSolved)
+            isSolved = false;
+
+        if (!GridController.Instance.CheckNumberSolvedInAllCells(solutionNumber))
+            InputController.Instance.ChangeNumberSelectionState(solutionNumber - 1, true);
+
         // Set number to blank
         currentNumber = -1;
         numberTMP.text = " ";
-
-        if (IsWrong())
-            isWrong = false;
-
-        if (isSolved)
-            isSolved = false;
 
         // Refresh selected Tiles
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
@@ -298,7 +364,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public bool RemoveNumber(bool isWrong)
     {
-        if (IsSolved())
+        if (isLocked)
             return false;
 
         // Set number to blank
@@ -311,6 +377,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         this.isWrong = isWrong;
 
+        if (isWrong)
+            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberWrongColor;
+
         if (IsWrong())
             HighlightWrongTile();
         else
@@ -321,11 +390,15 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public bool RemoveSolvedNumber()
     {
+        isSolved = false;
+
+        if (!GridController.Instance.CheckNumberSolvedInAllCells(solutionNumber))
+            InputController.Instance.ChangeNumberSelectionState(solutionNumber - 1, true);
+
         // Set number to blank
         currentNumber = -1;
         numberTMP.text = " ";
-
-        isSolved = false;
+        
         cellParent.CheckCellSolved();
 
         // Refresh selected Tiles
@@ -341,11 +414,26 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         currentNumber = number;
         numberTMP.text = (currentNumber == -1) ? " " : currentNumber.ToString();
 
+        if(currentNumber == solutionNumber)
+        {
+            isSolved = true;
+
+            if (GridController.Instance.CheckNumberSolvedInAllCells(solutionNumber))
+                InputController.Instance.ChangeNumberSelectionState(solutionNumber - 1, false);
+
+            cellParent.CheckCellSolved(true);
+        }
+
+        
+
         // Refresh selected Tiles
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
         HighlightSelectedTile();
 
         this.isWrong = isWrong;
+
+        if (!IsWrong())
+            numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
 
         if (IsWrong())
             HighlightWrongTile();
@@ -415,6 +503,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public bool IsSolved()
     {
         return isLocked || isSolved;
+    }
+
+    public bool IsLocked()
+    {
+        return isLocked;
     }
 
     public bool CheckCurrentNumber(int number)

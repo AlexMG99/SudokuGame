@@ -11,8 +11,11 @@ public class NumberSelection : MonoBehaviour
     private Image buttonImage;
     [SerializeField]
     private TextMeshProUGUI numberText;
+    [SerializeField]
+    private Button button;
 
     private int numberValue = -1;
+
 
     #region MonoBehaviourFunctions
     private void Start()
@@ -33,6 +36,10 @@ public class NumberSelection : MonoBehaviour
     {
         numberText.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
         buttonImage.color = SkinController.Instance.CurrentGridSkin.BackgroundColor;
+
+        var newColorBlock = button.colors;
+        newColorBlock.disabledColor = SkinController.Instance.CurrentGridSkin.BackgroundColor;
+        button.colors = newColorBlock;
     }
 
     public void OnClicked()
@@ -41,6 +48,16 @@ public class NumberSelection : MonoBehaviour
             InputController.Instance.ChangeSelectedNumber(numberValue);
         else
             InputController.Instance.AddNoteNumber(numberValue);
+    }
+
+    public void ChangeNumberState(bool state)
+    {
+        button.interactable = state;
+
+        if (state)
+            numberText.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
+        else
+            numberText.color = SkinController.Instance.CurrentGridSkin.ButtonHoverColor;
     }
     #endregion
 }
