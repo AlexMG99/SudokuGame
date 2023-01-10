@@ -115,24 +115,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             numberTMP.text = (currentNumber == -1) ? " " : currentNumber.ToString();
     }
 
-    private void DisableNotes()
-    {
-        int countDeactivateNotes = 0;
-        for(int i = 0; i < notes.Count; i++)
-        {
-            if(notes[i].enabled)
-            {
-                InputController.Instance.AddActionToQueue(new Action<int>(ActionType.RemoveNoteValue, i, Position));
-                countDeactivateNotes++;
-
-                notes[i].enabled = false;
-            }
-        }
-
-        if(countDeactivateNotes > 0)
-            InputController.Instance.AddActionToQueue(new Action<int>(ActionType.RemoveAllNotes, countDeactivateNotes, Position));
-    }
-
     #endregion
 
     #region PublicFunctions
@@ -168,7 +150,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public IEnumerator TileCompleteAnimation(float delay, float animTime)
     {
-        tileImage.color = SkinController.Instance.CurrentTileSkin.TileHoverColor;
+        if(tileStatus == TileStatus.HOVER)
+            tileImage.color = SkinController.Instance.CurrentTileSkin.TileHoverColor;
+        else if (tileStatus == TileStatus.SELECTED)
+            tileImage.color = SkinController.Instance.CurrentTileSkin.TileSelectedColor;
+
+        Color tileStartColor = tileImage.color;
 
         yield return new WaitForSeconds(delay);
 
@@ -180,7 +167,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         while (!timer.CheckTime())
         {
             status += speed * Time.deltaTime;
-            tileImage.color = Color.Lerp(SkinController.Instance.CurrentTileSkin.TileHoverColor, SkinController.Instance.CurrentTileSkin.TileIdleColor, status);
+            tileImage.color = Color.Lerp(tileStartColor, SkinController.Instance.CurrentTileSkin.TileIdleColor, status);
             yield return null;
         }
 
@@ -189,7 +176,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         while (!timer.CheckTime())
         {
             status += speed * Time.deltaTime;
-            tileImage.color = Color.Lerp(SkinController.Instance.CurrentTileSkin.TileIdleColor, SkinController.Instance.CurrentTileSkin.TileHoverColor, status);
+            tileImage.color = Color.Lerp(SkinController.Instance.CurrentTileSkin.TileIdleColor, tileStartColor, status);
             yield return null;
         }
 
@@ -284,6 +271,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         UpdateNumberText(solutionNumber);
         isSolved = true;
 
+        if (GridController.Instance.CheckNumberSolvedInAllCells(solutionNumber))
+            InputController.Instance.ChangeNumberSelectionState(solutionNumber - 1, false);
+
         if (IsWrong())
             isWrong = false;
 
@@ -292,7 +282,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
         HighlightSelectedTile();
 
-        cellParent.CheckCellSolved();
+        cellParent.CheckCellSolved(true);
 
         return new Action<int>(ActionType.AddValue, solutionNumber, position);
     }
@@ -457,6 +447,28 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         return currentNote.enabled;
     }
 
+    public bool DisableNotes()
+    {
+        int countDeactivateNotes = 0;
+        for (int i = 0; i < notes.Count; i++)
+        {
+            if (notes[i].enabled)
+            {
+                InputController.Instance.AddActionToQueue(new Action<int>(ActionType.RemoveNoteValue, i, Position));
+                countDeactivateNotes++;
+
+                notes[i].enabled = false;
+            }
+        }
+
+        if (countDeactivateNotes > 0)
+        {
+            InputController.Instance.AddActionToQueue(new Action<int>(ActionType.RemoveAllNotes, countDeactivateNotes, Position));
+            return true;
+        }
+        else
+            return false;
+    }
 
     public void HighlightTile()
     {

@@ -43,6 +43,10 @@ public class TileSkinSO : ScriptableObject
     public Color NumberWrongColor => numberWrongColor;
 
     [SerializeField]
+    private Color numberDisabledColor;
+    public Color NumberDisabledColor => numberDisabledColor;
+
+    [SerializeField]
     private Color notesColor;
     public Color NotesColor => notesColor;
 

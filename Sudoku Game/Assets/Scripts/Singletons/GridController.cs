@@ -54,6 +54,12 @@ public class GridController : MonoBehaviourSingleton<GridController>
             string cellLockedNumbers = GetCellNumber(i, levelController.CurrentLevel.NumberSolution);
             string cellHideNumbers = GetCellNumber(i, levelController.CurrentLevel.NumberHide);
             cells[i].SetTilesNumbers(cellLockedNumbers, cellHideNumbers, i);
+
+            // Check Selection Numbers
+            if (!CheckNumberSolvedInAllCells(i + 1))
+                InputController.Instance.ChangeNumberSelectionState(i, true);
+            else
+                InputController.Instance.ChangeNumberSelectionState(i, false);
         }
     }
 
@@ -184,9 +190,10 @@ public class GridController : MonoBehaviourSingleton<GridController>
         foreach (Cell cell in cells)
         {
             cell.HighlightCellRowColumn(cellIdx, position);
-            cell.HighlightWrongNumberInCell(number);
             cell.HighlightWrongNumberRowColumn(number, position);
         }
+
+        cells[cellIdx].HighlightWrongNumberInCell(number);
     }
 
     public void HiglightCellRowColumnNumber(int number, int cellIdx, Vector2Int position)

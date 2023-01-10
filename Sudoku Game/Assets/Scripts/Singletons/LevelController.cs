@@ -160,8 +160,9 @@ public class LevelController : MonoBehaviour
     {
         ResetLevel();
 
-        currentLevel.SetLevelDifficulty(levelDifficulty);
         LoadLevelRandom();
+        currentLevel.SetLevelDifficulty(levelDifficulty);
+        
         
         GridController.Instance.SetNextLevel();
 

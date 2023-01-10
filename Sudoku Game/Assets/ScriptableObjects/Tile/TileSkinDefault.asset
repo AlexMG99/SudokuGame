@@ -21,4 +21,5 @@ MonoBehaviour:
   numberLockColor: {r: 0, g: 0, b: 0, a: 1}
   numberSolutionColor: {r: 0.27058825, g: 0.40784317, b: 0.7254902, a: 1}
   numberWrongColor: {r: 0.91372555, g: 0, b: 0.17254902, a: 1}
+  numberDisabledColor: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
   notesColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}

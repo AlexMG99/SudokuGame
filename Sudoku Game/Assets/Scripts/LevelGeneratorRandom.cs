@@ -62,8 +62,8 @@ public class LevelGeneratorRandom : MonoBehaviourSingleton<LevelGeneratorRandom>
             else
             {
                 for (int y = 1; y <= 9; y++) // forget anything about the current square
-                    Available[c].Add(y);// by resetting its available numbers
-                Squares[c - 1] = new Square();/* TODO Change to default(_) if this is not a reference type */; // go back and retry a different number 
+                    Available[c].Add(y); // by resetting its available numbers
+                Squares[c - 1] = new Square();
                 c -= 1; // in the previous square
             }
         }

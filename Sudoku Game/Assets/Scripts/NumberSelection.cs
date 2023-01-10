@@ -34,12 +34,12 @@ public class NumberSelection : MonoBehaviour
 
     public void SetSkin()
     {
-        numberText.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
-        buttonImage.color = SkinController.Instance.CurrentGridSkin.BackgroundColor;
+        if (button.interactable)
+            numberText.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
+        else
+            numberText.color = SkinController.Instance.CurrentTileSkin.NumberDisabledColor;
 
-        var newColorBlock = button.colors;
-        newColorBlock.disabledColor = SkinController.Instance.CurrentGridSkin.BackgroundColor;
-        button.colors = newColorBlock;
+        buttonImage.color = SkinController.Instance.CurrentGridSkin.BackgroundColor;
     }
 
     public void OnClicked()

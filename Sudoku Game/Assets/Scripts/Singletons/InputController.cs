@@ -34,7 +34,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
     #region PrivateFunctions
     private void Init()
     {
-        PlayerPrefs.SetInt("Hints", 10);
+        PlayerPrefs.SetInt("Hints", 60);
         hintCount = PlayerPrefs.GetInt("Hints", 0);
     }
 
@@ -112,10 +112,10 @@ public class InputController : MonoBehaviourSingleton<InputController>
 
     public void RemoveNumberOnTile()
     {
-        if (selectedTile && !selectedTile.IsEmpty())
+        if (selectedTile)
         {
             int tileNumber = selectedTile.CurrentNumber;
-            if (selectedTile.RemoveNumber())
+            if (!selectedTile.IsEmpty() && selectedTile.RemoveNumber())
             {
                 AudioSFX.Instance.PlaySFX("Eraser");
                 if(selectedTile.IsWrong())
@@ -123,10 +123,10 @@ public class InputController : MonoBehaviourSingleton<InputController>
                 else
                     actionQueue.Add(new Action<int>(ActionType.RemoveValue, tileNumber, selectedTile.Position));
             }
+            else if (selectedTile.DisableNotes())
+                AudioSFX.Instance.PlaySFX("Eraser");
             else
-            {
                 AudioSFX.Instance.PlaySFX("Wrong");
-            }
         }
         else
         {
