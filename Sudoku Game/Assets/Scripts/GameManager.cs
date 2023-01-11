@@ -41,6 +41,13 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     private GameStatus gameState = GameStatus.PLAY;
 
     #region MonoBehaviourFunction
+    public override void Awake()
+    {
+        base.Awake();
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+    }
+
     private void Start()
     {
         SetSkin();

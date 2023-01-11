@@ -22,7 +22,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 268bb415dc1ad534594fab6957663d17, type: 3}
     minRandomPitch: 1
     maxRandomPitch: 1
-    intensityFactor: 1
+    intensityFactor: 0.3
   - ID: Switch
     clip: {fileID: 8300000, guid: 347a44b4b4e9e674297b360eba0b6e91, type: 3}
     minRandomPitch: 1
