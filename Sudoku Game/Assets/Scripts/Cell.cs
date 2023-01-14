@@ -143,6 +143,16 @@ public class Cell : MonoBehaviour
         }
     }
 
+    public void ClearCell()
+    {
+        isCellSolved = false;
+
+        foreach (Tile tile in tiles)
+        {
+            tile.ResetTile();
+        }
+    }
+
     public bool FindTileByPosition(Vector2Int position, out Tile tileOut)
     {
         foreach (Tile tile in tiles)

@@ -89,7 +89,15 @@ public class GridController : MonoBehaviourSingleton<GridController>
             cells[i].ResetCell();
         }
     }
-    
+
+    public void ClearLevel()
+    {
+        for (int i = 0; i < cells.Count; i++)
+        {
+            cells[i].ResetCell();
+        }
+    }
+
     public void ResetSameLevel()
     {
         LevelController.SetMistakes(0);
@@ -98,9 +106,10 @@ public class GridController : MonoBehaviourSingleton<GridController>
 
     public void SetNextLevel()
     {
-        ResetLevel();
+        ClearLevel();
 
         SetGridLevel();
+
         UpdateSkins();
     }
 

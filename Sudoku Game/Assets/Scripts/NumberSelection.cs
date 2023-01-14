@@ -57,7 +57,7 @@ public class NumberSelection : MonoBehaviour
         if (state)
             numberText.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
         else
-            numberText.color = SkinController.Instance.CurrentGridSkin.ButtonHoverColor;
+            numberText.color = SkinController.Instance.CurrentTileSkin.NumberDisabledColor;
     }
     #endregion
 }

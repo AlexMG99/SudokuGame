@@ -38,7 +38,7 @@ public class InputController : MonoBehaviourSingleton<InputController>
         hintCount = PlayerPrefs.GetInt("Hints", 0);
     }
 
-    
+
     #endregion
 
     #region PublicsFunctions
@@ -50,30 +50,27 @@ public class InputController : MonoBehaviourSingleton<InputController>
         selectedNumber = newNumber;
 
         // Add removed number to actionQueue
-        bool valueChanged = false;
-        if (!selectedTile.IsLocked())
+        if (!selectedTile.CheckCurrentNumber(selectedNumber))
         {
-            if(selectedTile.IsWrong())
+            if (selectedTile.IsWrong())
                 actionQueue.Add(new Action<int>(ActionType.RemoveValueWrong, selectedTile.CurrentNumber, selectedTile.Position));
             else
                 actionQueue.Add(new Action<int>(ActionType.RemoveValue, selectedTile.CurrentNumber, selectedTile.Position));
 
-            valueChanged = true;
-        }
-
-        if (selectedTile)
-        {
             // Add action to queue
             if (selectedTile.CheckNewNumber())
                 actionQueue.Add(new Action<int>(ActionType.AddValue, selectedNumber, selectedTile.Position));
             else
                 actionQueue.Add(new Action<int>(ActionType.AddValueWrong, selectedNumber, selectedTile.Position));
 
-            if (valueChanged)
-                actionQueue.Add(new Action<int>(ActionType.ChangeValue, -1, selectedTile.Position));
+            actionQueue.Add(new Action<int>(ActionType.ChangeValue, -1, selectedTile.Position));
+        }
+        else
+        {
+            AudioSFX.Instance.PlaySFX("Wrong");
         }
 
-        
+
     }
 
     public void AddNoteNumber(int newNumber)
@@ -139,56 +136,67 @@ public class InputController : MonoBehaviourSingleton<InputController>
         
     }
 
-    public void UndoMovement()
+    public void UndoMovement(bool SFX = true)
     {
         if (actionQueue.Count > 0)
         {
             Action<int> lastAction = actionQueue.Last();
-            actionQueue.Remove(lastAction);
+            actionQueue.RemoveAt(actionQueue.Count - 1);
 
             Tile actionTile = GridController.Instance.FindTileByPosition(lastAction.position);
             selectedTile = actionTile;
-            switch (lastAction.actionType)
+
+            if (!selectedTile.IsLocked())
             {
-                case ActionType.AddValue:
-                    if (actionTile.IsSolved())
-                        actionTile.RemoveSolvedNumber();
-                    else
+                switch (lastAction.actionType)
+                {
+                    case ActionType.AddValue:
                         actionTile.RemoveNumber();
-                    break;
-                case ActionType.ChangeValue:
-                    UndoMovement();
-                    UndoMovement();
-                    break;
-                case ActionType.RemoveValue:
-                    actionTile.SetNumber(lastAction.value, false);
-                    break;
-                case ActionType.AddValueWrong:
-                    actionTile.RemoveNumber(false);
-                    break;
-                case ActionType.RemoveValueWrong:
-                    actionTile.SetNumber(lastAction.value, true);
-                    break;
-                case ActionType.AddNoteValue:
-                case ActionType.RemoveNoteValue:
-                    actionTile.SetNoteNumber(lastAction.value);
-                    GridController.Instance.HiglightCellRowColumn(actionTile.CellParent.CellIdx, actionTile.Position);
-                    actionTile.HighlightSelectedTile();
-                    break;
-                case ActionType.RemoveAllNotes:
-                    for(int i = 0; i < lastAction.value; i++)
-                    {
-                        UndoMovement();
-                    }
-                    break;
-                case ActionType.None:
-                default:
-                    Debug.LogError("Action has no type!");
-                    break;
+                        break;
+                    case ActionType.ChangeValue:
+                        UndoMovement(false);
+                        UndoMovement(false);
+                        break;
+                    case ActionType.RemoveValue:
+                        actionTile.SetNumber(lastAction.value, false);
+                        break;
+                    case ActionType.AddValueWrong:
+                        actionTile.RemoveNumber(false);
+                        break;
+                    case ActionType.RemoveValueWrong:
+                        actionTile.SetNumber(lastAction.value, true);
+                        break;
+                    case ActionType.AddNoteValue:
+                    case ActionType.RemoveNoteValue:
+                        if (actionTile.SetNoteNumber(lastAction.value))
+                        {
+                            GridController.Instance.HiglightCellRowColumn(actionTile.CellParent.CellIdx, actionTile.Position);
+                            actionTile.HighlightSelectedTile();
+                        }
+                        break;
+                    case ActionType.RemoveAllNotes:
+                        for (int i = 0; i < lastAction.value; i++)
+                        {
+                            UndoMovement(false);
+                        }
+                        break;
+                    case ActionType.None:
+                    default:
+                        Debug.LogError("Action has no type!");
+                        break;
+                }
+
+                if (SFX)
+                    AudioSFX.Instance.PlaySFX("Undo");
+            }
+            else if (actionQueue.Count > 0)
+            {
+                if(SFX)
+                    AudioSFX.Instance.PlaySFX("Wrong");
+                UndoMovement(false);
             }
 
-            if(lastAction.actionType != ActionType.ChangeValue)
-                AudioSFX.Instance.PlaySFX("Undo");
+            
         }
         else
         {

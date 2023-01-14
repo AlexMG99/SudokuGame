@@ -150,10 +150,10 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public IEnumerator TileCompleteAnimation(float delay, float animTime)
     {
-        if(tileStatus == TileStatus.HOVER)
-            tileImage.color = SkinController.Instance.CurrentTileSkin.TileHoverColor;
-        else if (tileStatus == TileStatus.SELECTED)
+        if (tileStatus == TileStatus.SELECTED)
             tileImage.color = SkinController.Instance.CurrentTileSkin.TileSelectedColor;
+        else
+            tileImage.color = SkinController.Instance.CurrentTileSkin.TileHoverColor;
 
         Color tileStartColor = tileImage.color;
 
@@ -187,6 +187,21 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         tileStatus = TileStatus.UNSELECTED;
 
         isWrong = false;
+        isLocked = false;
+        isSolved = false;
+        currentNumber = -1;
+        numberTMP.text = " ";
+
+        DisableNotesOnHint();
+
+        DownlightTile();
+    }
+
+    public void ClearTile()
+    {
+        tileStatus = TileStatus.UNSELECTED;
+
+        isWrong = false;
 
         if (!isLocked)
         {
@@ -194,7 +209,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             currentNumber = -1;
             numberTMP.text = " ";
 
-            DisableNotes();
+            DisableNotesOnHint();
         }
 
         DownlightTile();
@@ -280,6 +295,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberLockColor;
 
+        DisableNotesOnHint();
+
         GridController.Instance.HiglightNumberInCells(solutionNumber);
         HighlightSelectedTile();
 
@@ -336,6 +353,9 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         if (isSolved)
             isSolved = false;
+
+        if (isWrong)
+            isWrong = false;
 
         if (!GridController.Instance.CheckNumberSolvedInAllCells(solutionNumber))
             InputController.Instance.ChangeNumberSelectionState(solutionNumber - 1, true);
@@ -413,8 +433,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             cellParent.CheckCellSolved(true);
         }
 
-        
-
         // Refresh selected Tiles
         GridController.Instance.HiglightCellRowColumn(cellParent.CellIdx, position);
         HighlightSelectedTile();
@@ -434,6 +452,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     // Notes handler
     public bool SetNoteNumber(int noteNumber)
     {
+
         if (notes.Count == 0)
         {
             Debug.LogError($"Notes in tile {position} is empty!");
@@ -467,6 +486,14 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         }
         else
             return false;
+    }
+
+    public void DisableNotesOnHint()
+    {
+        for (int i = 0; i < notes.Count; i++)
+        {
+            notes[i].enabled = false;
+        }
     }
 
     public void HighlightTile()
