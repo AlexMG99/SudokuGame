@@ -218,33 +218,6 @@ public class Cell : MonoBehaviour
         return isCellSolved;
     }
 
-    public Action<int> UseHintOnTile()
-    {
-        int tryFindRandomCell = 0;
-
-        while (tryFindRandomCell < 6)
-        {
-            int randomRange = Random.Range(0, tiles.Count);
-
-            if (!tiles[randomRange].IsSolved())
-            {
-                return tiles[randomRange].SolveNumber();
-            }
-
-            tryFindRandomCell++;
-        }
-
-        foreach (Tile tile in tiles)
-        {
-            if (!tile.IsSolved())
-            {
-                return tile.SolveNumber();
-            }
-        }
-
-        return new Action<int>(ActionType.None, -1, Vector2Int.zero);
-    }
-
     public void HighlightNumberInCell(int number)
     {
         Tile highlightTile = GetTileByNumber(number);

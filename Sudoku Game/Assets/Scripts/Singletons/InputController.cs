@@ -98,16 +98,20 @@ public class InputController : MonoBehaviourSingleton<InputController>
 
     public void UseHint()
     {
-        if (hintCount <= 0)
-            return;
-
-        Action<int> hintAction = GridController.Instance.UseHintOnCell();
-        if (hintAction.actionType != ActionType.None)
+        if (hintCount <= 0 || !selectedTile)
         {
+            AudioSFX.Instance.PlaySFX("Wrong");
+            return;
+        }
+
+        if (!selectedTile.IsLocked())
+        {
+            selectedTile.SolveHintNumber();
             hintCount--;
             AudioSFX.Instance.PlaySFX("Hint");
-            actionQueue.Add(hintAction);
         }
+        else
+            AudioSFX.Instance.PlaySFX("Wrong");
     }
 
     public void RemoveNumberOnTile()

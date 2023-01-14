@@ -139,33 +139,6 @@ public class GridController : MonoBehaviourSingleton<GridController>
         return tileInPosition;
     }
 
-    public Action<int> UseHintOnCell()
-    {
-        int tryFindRandomCell = 0;
-
-        while (tryFindRandomCell < 3)
-        {
-            int randomRange = Random.Range(0, cells.Count);
-
-            if (!cells[randomRange].IsCellSolved())
-            {
-                return cells[randomRange].UseHintOnTile();
-            }
-
-            tryFindRandomCell++;
-        }
-
-        foreach (Cell cell in cells)
-        {
-            if (!cell.IsCellSolved())
-            {
-                return cell.UseHintOnTile();
-            }
-        }
-
-        return new Action<int>(ActionType.None, -1, Vector2Int.zero);
-    }
-
     public void UpdateSkins()
     {
         SetSkin();
@@ -177,6 +150,7 @@ public class GridController : MonoBehaviourSingleton<GridController>
 
     public void HiglightNumberInCells(int number)
     {
+        DownlightAllCells();
         foreach(Cell cell in cells)
         {
             cell.HighlightNumberInCell(number);

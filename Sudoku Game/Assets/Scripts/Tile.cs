@@ -266,10 +266,11 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         cellParent = cell;
     }
 
-    public Action<int> SolveNumber()
+    public void SolveHintNumber()
     {
         UpdateNumberText(solutionNumber);
         isSolved = true;
+        isLocked = true;
 
         if (GridController.Instance.CheckNumberSolvedInAllCells(solutionNumber))
             InputController.Instance.ChangeNumberSelectionState(solutionNumber - 1, false);
@@ -277,14 +278,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         if (IsWrong())
             isWrong = false;
 
-        numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberSolutionColor;
+        numberTMP.color = SkinController.Instance.CurrentTileSkin.NumberLockColor;
 
-        GridController.Instance.HiglightCellRowColumnNumber(solutionNumber, cellParent.CellIdx, position);
+        GridController.Instance.HiglightNumberInCells(solutionNumber);
         HighlightSelectedTile();
 
         cellParent.CheckCellSolved(true);
-
-        return new Action<int>(ActionType.AddValue, solutionNumber, position);
     }
 
     public bool CheckNewNumber()
